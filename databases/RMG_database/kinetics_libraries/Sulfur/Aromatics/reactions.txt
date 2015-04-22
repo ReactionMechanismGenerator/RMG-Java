@@ -1,0 +1,7 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+C6H5CH2SJ = C6H5SCH2J	5.97E+08	1.22	29.11	0.0	0.0	0.0
+

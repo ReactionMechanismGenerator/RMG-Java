@@ -1,0 +1,882 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+C2H5(32)+SPC(33) = DEDS(1)                             1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C_rad/H2/Cs , SsJ-Ss ]
+SPC(35)+SPC(35) = DEDS(1)                              1.060e+11 	  1.21 	 -0.95 		0.0	0.0	0.0	//R_Recombination exact:   [ SsJ-Cs , SsJ-Cs ]
+DEDS(1)+C2H5(32) = SPC(44)+SPC(35)                     6.834e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(Cs) , CsJ-CsHH ]
+SPC(35)+C2H5(32) = SPC(44)                             8.940e+07 	  1.54 	 -1.32 		0.0	0.0	0.0	//R_Recombination exact:   [ SsJ-Cs , C_rad/H2/Cs ]
+SPC(34)+C2H5SH(52) = DEDS(1)+SPC(35)                   8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(35)+SPC(35) = C2H5SH(52)+CH3CHS(55)                1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -40.8 kcal/mol and alpha = 1.19. Warning: Ea raised from -48.1 kcal/mol to 0.0.
+CH3CHS(55)+SPC(35) = SPC(34)                           3.331e+02 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_Cds-CsH , SsJ-Cs ]
+SPC(34)+SPC(35) = DEDS(1)+CH3CHS(55)                   2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(34) = SPC(73)                                      3.290e+11 	  0.21 	  31.90 		0.0	0.0	0.0	//intra_substitutionS_isomerization estimate: (Average:)  [ XSR3J_S , CsJ-3-SsCsH , S-Cs(CsHH)Ss ]
+CH3CHS(55)+SPC(35) = SPC(73)                           2.620e+05 	  2.10 	 -0.16 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-CsH_Sd , SsJ-Cs ]
+SPC(34)+SPC(39) = DEDS(1)+SPC(33)                      1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(33)+SPC(35) = SPC(39)+CH3CHS(55)                   1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -26.2 kcal/mol and alpha = 1.19. Warning: Ea raised from -30.7 kcal/mol to 0.0.
+SPC(39)+SPC(35) = C2H5SH(52)+SPC(33)                   6.170e+02 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , S_rad/NonDeC ]
+C2H5SH(52)+SPC(35) = SPC(39)+C2H5(32)                  7.250e+01 	  3.21 	  11.45 		0.0	0.0	0.0	//SubstitutionS exact:   [ S-HCs(CsHH) , SsJ-Cs ]
+CH3CHS(55)+C2H5SH(52) = SPC(80)                        1.497e-01 	  4.00 	  42.45 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Sd_Cd/H/Nd , H_SCs(CsHH) ]
+SPC(34)+SPC(80) = DEDS(1)+SPC(73)                      8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+C2H5SH(52)+SPC(73) = SPC(80)+SPC(35)                   6.680e+02 	  3.15 	  1.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_rad/NonDeC ]
+SPC(73)+SPC(35) = SPC(80)+CH3CHS(55)                   1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -42.0 kcal/mol and alpha = 1.19. Warning: Ea raised from -49.5 kcal/mol to 0.0.
+SPC(39)+SPC(73) = SPC(33)+SPC(80)                      6.170e+02 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , S_rad/NonDeC ]
+SPC(77)+SPC(39) = CH3CHS(55)+SPC(33)                   8.670e+02 	  3.06 	 -2.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , S/H/NonDeS ]
+SPC(77)+C2H5SH(52) = CH3CHS(55)+SPC(35)                4.970e+02 	  3.06 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , S/H/NonDeC ]
+CH3CHS(55)+SPC(34) = SPC(77)+DEDS(1)                   4.360e-10 	  4.56 	  4.77 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS/H/NonDeC , C_rad/H/CsS ]
+SPC(35)+SPC(77) = CH3CHS(55)+CH3CHS(55)                6.118e+11 	 -0.02 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , Y_rad ] Ea computed using Evans-Polanyi dHrxn(298K) = -48.6 kcal/mol and alpha = 0.15. Warning: Ea raised from -7.2 kcal/mol to 0.0.
+SPC(77)+SPC(80) = CH3CHS(55)+SPC(73)                   4.970e+02 	  3.06 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , S/H/NonDeC ]
+CH3CHS(55)+SPC(77) = SPC(107)                          6.463e+02 	  2.98 	 -0.09 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_Cds-CsH , C = SJ-Cs ]
+SPC(33)+SPC(73) = SPC(39)+SPC(85)                      3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H/NdNd_Rrad ]
+SPC(35)+SPC(73) = C2H5SH(52)+SPC(85)                   3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H/NdNd_Rrad ]
+SPC(34)+SPC(73) = DEDS(1)+SPC(85)                      6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Rrad ]
+SPC(73)+SPC(73) = SPC(80)+SPC(85)                      3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H/NdNd_Rrad ]
+SPC(77)+SPC(35) = SPC(85)                              1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C = SJ-Cs , SsJ-Cs ]
+SPC(77)+SPC(73) = CH3CHS(55)+SPC(85)                   3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H/NdNd_Rrad ]
+DEDS(1)+SPC(77) = SPC(85)+SPC(35)                      1.356e+02 	  2.88 	  10.13 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(Cs) , C = SJ-Cs ]
+SPC(44)+SPC(77) = C2H5(32)+SPC(85)                     1.356e+02 	  2.88 	  10.13 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Cs(CsHH) , C = SJ-Cs ]
+SPC(34)+SPC(85) = DEDS(1)+SPC(107)                     1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+C2H5SH(52)+SPC(107) = SPC(85)+SPC(35)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(77)+SPC(85) = CH3CHS(55)+SPC(107)                  1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , C/H2/CsS ]
+SPC(39)+SPC(107) = SPC(33)+SPC(85)                     1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , C_rad/H/CsS ]
+SPC(80)+SPC(107) = SPC(73)+SPC(85)                     8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(107)+SPC(35) = SPC(85)+CH3CHS(55)                  2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(107)+SPC(73) = SPC(85)+SPC(85)                     6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Rrad ]
+SPC(59) = SPC(35)                                      7.220e-02 	  4.07 	  20.90 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , S_H_out ]
+SPC(59)+SPC(39) = C2H5SH(52)+SPC(33)                   1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(59)+C2H5SH(52) = C2H5SH(52)+SPC(35)                8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+C2H5SH(52)+SPC(34) = SPC(59)+DEDS(1)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(59)+SPC(34) = CH3CHS(55)+DEDS(1)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -60.1 kcal/mol and alpha = 1.19. Warning: Ea raised from -71.0 kcal/mol to 0.0.
+SPC(35)+SPC(59) = CH3CHS(55)+C2H5SH(52)                2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(59) = CH3CHS(55)+C2H5SH(52)                6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -56.8 kcal/mol and alpha = 1.19. Warning: Ea raised from -67.1 kcal/mol to 0.0.
+SPC(59)+SPC(77) = CH3CHS(55)+CH3CHS(55)                6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , Y_rad ] Ea computed using Evans-Polanyi dHrxn(298K) = -56.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.8 kcal/mol to 0.0.
+SPC(59)+SPC(80) = C2H5SH(52)+SPC(73)                   8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(59)+SPC(33) = CH3CHS(55)+SPC(39)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ S_Csrad , S_rad/NonDeS ] Ea computed using Evans-Polanyi dHrxn(298K) = -34.2 kcal/mol and alpha = 1.19. Warning: Ea raised from -40.2 kcal/mol to 0.0.
+SPC(59)+SPC(35) = SPC(80)                              1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ CsJ-CsSsH , SsJ-Cs ]
+SPC(59)+SPC(73) = CH3CHS(55)+SPC(80)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , S_rad/NonDeC ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.0 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.0 kcal/mol to 0.0.
+SPC(80)+C2H5(32) = SPC(59)+SPC(44)                     6.779e+01 	  2.88 	  10.13 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsCs , CsJ-CsHH ]
+SPC(80)+SPC(35) = SPC(59)+DEDS(1)                      1.170e+00 	  3.89 	  12.00 		0.0	0.0	0.0	//SubstitutionS exact:   [ S-CsCs , SsJ-Cs ]
+SPC(59)+CH3CHS(55) = C2H5SH(52)+SPC(77)                4.360e-10 	  4.56 	  4.77 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , CS/H/NonDeC ]
+SPC(80)+SPC(77) = SPC(59)+SPC(85)                      6.779e+01 	  2.88 	  10.13 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsCs , C = SJ-Cs ]
+SPC(59)+SPC(85) = C2H5SH(52)+SPC(107)                  1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(73)+SPC(59) = SPC(85)+C2H5SH(52)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(59)+SPC(107) = CH3CHS(55)+SPC(85)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -56.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.5 kcal/mol to 0.0.
+SPC(62)+SPC(39) = SPC(44)+SPC(33)                      1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(62)+C2H5SH(52) = SPC(44)+SPC(35)                   8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(44)+SPC(34) = SPC(62)+DEDS(1)                      3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+CH3CHS(55)+C2H5(32) = SPC(62)                          1.690e+02 	  3.00 	 -1.00 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Sd_Cds-CsH , CsJ-CsHH ]
+SPC(35)+SPC(62) = CH3CHS(55)+SPC(44)                   2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(62) = CH3CHS(55)+SPC(44)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.8 kcal/mol to 0.0.
+SPC(62)+SPC(80) = SPC(44)+SPC(73)                      8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(80)+C2H5(32) = SPC(62)+C2H5SH(52)                  7.330e+01 	  2.76 	  11.50 		0.0	0.0	0.0	//SubstitutionS exact:   [ S-HCs(NonDe) , CsJ-CsHH ]
+SPC(80)+SPC(35) = SPC(62)+SPC(39)                      9.633e+00 	  3.53 	  12.02 		0.0	0.0	0.0	//SubstitutionS exact:   [ S-HCs(NonDe) , SsJ-Cs ]
+SPC(44)+SPC(77) = SPC(62)+CH3CHS(55)                   2.812e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , CS_rad/Cs ]
+SPC(44)+SPC(107) = SPC(62)+SPC(85)                     3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(73)+SPC(62) = SPC(85)+SPC(44)                      6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(44)+SPC(59) = SPC(62)+C2H5SH(52)                   3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(94) = SPC(73)                                      7.610e+11 	  0.22 	  21.10 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , S_H_out ]
+SPC(94)+SPC(39) = SPC(80)+SPC(33)                      1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(94)+C2H5SH(52) = SPC(80)+SPC(35)                   8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(80)+SPC(34) = SPC(94)+DEDS(1)                      1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(94)+SPC(80) = SPC(80)+SPC(73)                      8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(35)+SPC(94) = CH3CHS(55)+SPC(80)                   2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(94) = CH3CHS(55)+SPC(80)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.0 kcal/mol to 0.0.
+SPC(80)+SPC(77) = SPC(94)+CH3CHS(55)                   1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , CS_rad/Cs ]
+SPC(80)+SPC(107) = SPC(94)+SPC(85)                     1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(73)+SPC(94) = SPC(85)+SPC(80)                      6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(80)+SPC(59) = SPC(94)+C2H5SH(52)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+CH3CHS(55)+SPC(59) = SPC(94)                           3.910e+06 	  1.66 	 -0.87 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_Cds-CsH , CsJ-SsCsH ]
+SPC(94)+SPC(44) = SPC(80)+SPC(62)                      3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(33)+SPC(34) = SPC(39)+C4H8S2(67)                   6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cmethyl_Csrad ]
+SPC(35)+SPC(34) = C2H5SH(52)+C4H8S2(67)                6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(34)+SPC(34) = DEDS(1)+C4H8S2(67)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(73)+SPC(34) = SPC(80)+C4H8S2(67)                   6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(77)+SPC(34) = CH3CHS(55)+C4H8S2(67)                6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , Cmethyl_Csrad ]
+SPC(107)+SPC(34) = SPC(85)+C4H8S2(67)                  1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(59)+SPC(34) = C2H5SH(52)+C4H8S2(67)                1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(62)+SPC(34) = SPC(44)+C4H8S2(67)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(94)+SPC(34) = SPC(80)+C4H8S2(67)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(148)+SPC(39) = C4H8S2(67)+SPC(33)                  1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(148)+C2H5SH(52) = C4H8S2(67)+SPC(35)               8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+C4H8S2(67)+SPC(34) = SPC(148)+DEDS(1)                  1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(148)+SPC(80) = C4H8S2(67)+SPC(73)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+C4H8S2(67)+SPC(77) = SPC(148)+CH3CHS(55)               1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , CS_rad/Cs ]
+C4H8S2(67)+SPC(107) = SPC(148)+SPC(85)                 1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+C4H8S2(67)+SPC(59) = SPC(148)+C2H5SH(52)               1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(148)+SPC(44) = C4H8S2(67)+SPC(62)                  3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+C4H8S2(67)+SPC(94) = SPC(148)+SPC(80)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(35)+SPC(148) = CH3CHS(55)+C4H8S2(67)               2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(148) = CH3CHS(55)+C4H8S2(67)               6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.0 kcal/mol to 0.0.
+SPC(73)+SPC(148) = SPC(85)+C4H8S2(67)                  6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(34)+SPC(148) = C4H8S2(67)+C4H8S2(67)               1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+C2H3SJ(76)+SPC(39) = CH3CHS(55)+SPC(33)                8.950e+01 	  3.06 	  3.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/NonDeS ]
+C2H3SJ(76)+C2H5SH(52) = CH3CHS(55)+SPC(35)             2.320e+02 	  3.06 	  9.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/NonDeC ]
+CH3CHS(55)+SPC(34) = C2H3SJ(76)+DEDS(1)                2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(35)+C2H3SJ(76) = CH3CHS(55)+CH3CHS(55)             7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H2/Cd ]
+SPC(59)+C2H3SJ(76) = CH3CHS(55)+CH3CHS(55)             6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H2/Cd ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.3 kcal/mol to 0.0.
+C2H3SJ(76)+SPC(80) = CH3CHS(55)+SPC(73)                2.320e+02 	  3.06 	  9.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/NonDeC ]
+CH3CHS(55)+SPC(77) = C2H3SJ(76)+CH3CHS(55)             1.956e-02 	  4.34 	  9.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , CS_rad/Cs ]
+SPC(77) = C2H3SJ(76)                                   6.923e+06 	  1.65 	  30.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C = S_rad_out , Cs_H_out_2H ]
+CH3CHS(55)+SPC(107) = C2H3SJ(76)+SPC(85)               2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(73)+C2H3SJ(76) = SPC(85)+CH3CHS(55)                6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H2/Cd ]
+CH3CHS(55)+SPC(59) = C2H3SJ(76)+C2H5SH(52)             2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+C2H3SJ(76)+SPC(44) = CH3CHS(55)+SPC(62)                6.600e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , C/H2/CsS ]
+C2H3SJ(76)+SPC(80) = CH3CHS(55)+SPC(94)                3.300e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , C/H2/CsS ]
+C2H3SJ(76)+SPC(35) = C4H8S2(67)                        1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Cd , SsJ-Cs ]
+SPC(34)+C2H3SJ(76) = C4H8S2(67)+CH3CHS(55)             6.870e+13 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H2/Cd ]
+C4H8S2(67)+C2H5(32) = C2H3SJ(76)+SPC(44)               3.417e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsSs , CsJ-CsHH ]
+C4H8S2(67)+SPC(35) = C2H3SJ(76)+DEDS(1)                5.580e+00 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsSs , SsJ-Cs ]
+C4H8S2(67)+SPC(77) = C2H3SJ(76)+SPC(85)                6.779e+01 	  2.88 	  10.13 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsSs , C = SJ-Cs ]
+C4H8S2(67)+SPC(59) = C2H3SJ(76)+SPC(80)                3.417e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsSs , CsJ-SsCsH ]
+C2H3SJ(76)+C4H8S2(67) = CH3CHS(55)+SPC(148)            3.300e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , C/H2/CsS ]
+C2H3SJ(76)+CH3CHS(55) = SPC(148)                       3.331e+02 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ SsJ-Cd , Sd_Cds-CsH ]
+SPC(103)+C2H5SH(52) = SPC(80)                          1.000e+01 	  3.33 	  40.40 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Cd/H2_Cd/H/Nd , H_SCs(CsHH) ]
+SPC(33)+SPC(59) = SPC(39)+SPC(103)                     6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cmethyl_Csrad ]
+SPC(35)+SPC(59) = C2H5SH(52)+SPC(103)                  6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(34)+SPC(59) = DEDS(1)+SPC(103)                     1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(73)+SPC(59) = SPC(80)+SPC(103)                     6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(77)+SPC(59) = CH3CHS(55)+SPC(103)                  6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , Cmethyl_Csrad ]
+SPC(107)+SPC(59) = SPC(85)+SPC(103)                    1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(59)+SPC(59) = C2H5SH(52)+SPC(103)                  1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(62)+SPC(59) = SPC(44)+SPC(103)                     1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(94)+SPC(59) = SPC(80)+SPC(103)                     1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(148)+SPC(59) = C4H8S2(67)+SPC(103)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(34)+SPC(103) = DEDS(1)+C2H3SJ(76)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(62)+SPC(103) = SPC(44)+C2H3SJ(76)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(59)+SPC(103) = C2H5SH(52)+C2H3SJ(76)               1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+C2H5SH(52)+C2H3SJ(76) = SPC(103)+SPC(35)               6.750e+02 	  3.15 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_rad/Cd ]
+C2H3SJ(76)+SPC(103) = CH3CHS(55)+C2H3SJ(76)            1.090e+02 	  3.06 	  6.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/Cd ]
+SPC(77)+SPC(103) = CH3CHS(55)+C2H3SJ(76)               6.890e+02 	  3.06 	 -1.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , S/H/Cd ]
+SPC(39)+C2H3SJ(76) = SPC(33)+SPC(103)                  1.900e+02 	  3.15 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , S_rad/Cd ]
+SPC(80)+C2H3SJ(76) = SPC(73)+SPC(103)                  6.750e+02 	  3.15 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_rad/Cd ]
+SPC(94)+SPC(103) = SPC(80)+C2H3SJ(76)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(107)+SPC(103) = SPC(85)+C2H3SJ(76)                 1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(148)+SPC(103) = C4H8S2(67)+C2H3SJ(76)              1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+C2H3SJ(76)+SPC(35) = SPC(103)+CH3CHS(55)               1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -43.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -51.4 kcal/mol to 0.0.
+C2H3SJ(76)+SPC(34) = SPC(103)+C4H8S2(67)               6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+C2H3SJ(76)+SPC(73) = SPC(103)+SPC(85)                  3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H/NdNd_Rrad ]
+C2H3SJ(76)+SPC(59) = SPC(103)+SPC(103)                 6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+C2H3SJ(76)+SPC(59) = SPC(103)+CH3CHS(55)               6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -51.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -60.9 kcal/mol to 0.0.
+SPC(93) = SPC(73)                                      8.550e+01 	  3.04 	  11.62 		0.0	0.0	0.0	//intra_H_migration exact:   [ R3H_SS_Cs , C_rad_out_2H , S_H_out ]
+SPC(93)+SPC(39) = SPC(80)+SPC(33)                      3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , S/H/NonDeS ]
+SPC(93)+C2H5SH(52) = SPC(80)+SPC(35)                   2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , S/H/NonDeC ]
+SPC(93)+DEDS(1) = SPC(80)+SPC(34)                      1.672e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H2/CsS ]
+SPC(93)+SPC(80) = SPC(80)+SPC(73)                      2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , S/H/NonDeC ]
+SPC(35)+SPC(93) = CH3CHS(55)+SPC(80)                   7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H2/Cs ]
+SPC(59)+SPC(93) = CH3CHS(55)+SPC(80)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H2/Cs ] Ea computed using Evans-Polanyi dHrxn(298K) = -64.1 kcal/mol and alpha = 1.19. Warning: Ea raised from -75.8 kcal/mol to 0.0.
+SPC(93)+CH3CHS(55) = SPC(80)+SPC(77)                   3.770e-01 	  3.63 	  3.98 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , CS/H/NonDeC ]
+SPC(93)+SPC(85) = SPC(80)+SPC(107)                     8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H2/CsS ]
+SPC(73)+SPC(93) = SPC(85)+SPC(80)                      6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H2/Cs ]
+SPC(93)+C2H5SH(52) = SPC(80)+SPC(59)                   8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H2/CsS ]
+SPC(93)+SPC(44) = SPC(80)+SPC(62)                      1.672e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H2/CsS ]
+SPC(93)+SPC(80) = SPC(80)+SPC(94)                      8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H2/CsS ]
+SPC(93) = SPC(94)                                      6.440e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS_CsCsSCs , C_rad_out_2H , Cs_H_out_H/NonDeC ]
+SPC(34)+SPC(93) = C4H8S2(67)+SPC(80)                   6.900e+13 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H2/Cs ]
+SPC(93)+C4H8S2(67) = SPC(80)+SPC(148)                  8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H2/CsS ]
+SPC(93)+SPC(103) = SPC(80)+C2H3SJ(76)                  2.890e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , S/H/Cd ]
+SPC(93)+CH3CHS(55) = SPC(80)+C2H3SJ(76)                1.161e-03 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H3/CS ]
+SPC(103)+SPC(35) = SPC(93)                             2.480e+02 	  2.91 	 -0.33 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-SsH_Cds , SsJ-Cs ]
+SPC(59)+SPC(93) = SPC(103)+SPC(80)                     6.900e+13 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H2/Cs ]
+SPC(103)+SPC(35) = SPC(193)                            7.390e+01 	  3.10 	  1.30 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-HH_Cds-SsH , SsJ-Cs ]
+SPC(93) = SPC(193)                                     3.078e+11 	  0.16 	  26.90 		0.0	0.0	0.0	//intra_substitutionS_isomerization estimate: (Average:)  [ XSR3J_S , CsJ-3-CsHH , S-Cs(CsHH)C ]
+SPC(103)+C2H5SH(52) = SPC(207)                         7.120e+00 	  3.20 	  43.40 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Cd/H/Nd_Cd/H2 , H_SCs(CsHH) ]
+SPC(34)+SPC(207) = DEDS(1)+SPC(193)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(44)+SPC(193) = SPC(62)+SPC(207)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(59)+SPC(207) = C2H5SH(52)+SPC(193)                 1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+C2H5SH(52)+SPC(193) = SPC(207)+SPC(35)                 8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+C2H3SJ(76)+SPC(207) = CH3CHS(55)+SPC(193)              3.300e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , C/H2/CsS ]
+SPC(77)+SPC(207) = CH3CHS(55)+SPC(193)                 1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , C/H2/CsS ]
+SPC(39)+SPC(193) = SPC(33)+SPC(207)                    1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , C_rad/H/CsS ]
+SPC(93)+SPC(207) = SPC(80)+SPC(193)                    8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H2/CsS ]
+SPC(80)+SPC(193) = SPC(73)+SPC(207)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(80)+SPC(193) = SPC(94)+SPC(207)                    2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(107)+SPC(207) = SPC(85)+SPC(193)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+C4H8S2(67)+SPC(193) = SPC(148)+SPC(207)                2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(103)+SPC(193) = C2H3SJ(76)+SPC(207)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , C_rad/H/CsS ]
+SPC(193)+SPC(35) = SPC(207)+CH3CHS(55)                 2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(193)+SPC(34) = SPC(207)+C4H8S2(67)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(193)+SPC(73) = SPC(207)+SPC(85)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Rrad ]
+SPC(193)+SPC(59) = SPC(207)+SPC(103)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(193)+SPC(59) = SPC(207)+CH3CHS(55)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.0 kcal/mol to 0.0.
+SPC(107) = SPC(120)                                    7.620e+09 	  0.35 	  19.76 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_2H ]
+SPC(120)+SPC(39) = SPC(85)+SPC(33)                     8.950e+01 	  3.06 	  3.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/NonDeS ]
+SPC(120)+C2H5SH(52) = SPC(85)+SPC(35)                  2.320e+02 	  3.06 	  9.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/NonDeC ]
+SPC(85)+SPC(34) = SPC(120)+DEDS(1)                     2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(120)+SPC(80) = SPC(85)+SPC(73)                     2.320e+02 	  3.06 	  9.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/NonDeC ]
+SPC(85)+SPC(77) = SPC(120)+CH3CHS(55)                  1.956e-02 	  4.34 	  9.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , CS_rad/Cs ]
+SPC(85)+SPC(107) = SPC(120)+SPC(85)                    2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(35)+SPC(120) = CH3CHS(55)+SPC(85)                  7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H2/Cd ]
+SPC(59)+SPC(120) = CH3CHS(55)+SPC(85)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H2/Cd ] Ea computed using Evans-Polanyi dHrxn(298K) = -51.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -61.0 kcal/mol to 0.0.
+SPC(73)+SPC(120) = SPC(85)+SPC(85)                     6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H2/Cd ]
+SPC(85)+SPC(59) = SPC(120)+C2H5SH(52)                  2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(85)+SPC(62) = SPC(120)+SPC(44)                     2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(85)+SPC(94) = SPC(120)+SPC(80)                     2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(34)+SPC(120) = C4H8S2(67)+SPC(85)                  6.870e+13 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H2/Cd ]
+SPC(85)+SPC(148) = SPC(120)+C4H8S2(67)                 2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(85)+C2H3SJ(76) = SPC(120)+SPC(103)                 1.756e+02 	  3.46 	  1.51 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/CS , S_rad/Cd ]
+SPC(85)+C2H3SJ(76) = SPC(120)+CH3CHS(55)               8.430e-03 	  4.34 	  19.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H2/CS ]
+SPC(59)+SPC(120) = SPC(103)+SPC(85)                    6.870e+13 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ Cmethyl_Csrad , C_rad/H2/Cd ]
+SPC(85)+SPC(93) = SPC(120)+SPC(80)                     1.161e-03 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H2/Cs ]
+SPC(85)+SPC(193) = SPC(120)+SPC(207)                   2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(33)+SPC(93) = SPC(39)+SPC(213)                     3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H/NdNd_Csrad ]
+SPC(35)+SPC(93) = C2H5SH(52)+SPC(213)                  7.630e+11 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/NonDeC , C/H/NdNd_Csrad ]
+SPC(34)+SPC(93) = DEDS(1)+SPC(213)                     6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Csrad ]
+SPC(73)+SPC(93) = SPC(80)+SPC(213)                     7.630e+11 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/NonDeC , C/H/NdNd_Csrad ]
+SPC(77)+SPC(93) = CH3CHS(55)+SPC(213)                  3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H/NdNd_Csrad ]
+SPC(107)+SPC(93) = SPC(85)+SPC(213)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Csrad ]
+SPC(59)+SPC(93) = C2H5SH(52)+SPC(213)                  6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Csrad ]
+SPC(62)+SPC(93) = SPC(44)+SPC(213)                     6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Csrad ]
+SPC(94)+SPC(93) = SPC(80)+SPC(213)                     6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Csrad ]
+SPC(148)+SPC(93) = C4H8S2(67)+SPC(213)                 6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Csrad ]
+C2H3SJ(76)+SPC(93) = SPC(103)+SPC(213)                 7.630e+11 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H/NdNd_Csrad ]
+C2H3SJ(76)+SPC(93) = CH3CHS(55)+SPC(213)               7.830e+11 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H/NdNd_Csrad ]
+SPC(93)+SPC(93) = SPC(80)+SPC(213)                     8.430e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H/NdNd_Csrad ]
+SPC(193)+SPC(93) = SPC(207)+SPC(213)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Csrad ]
+SPC(34)+SPC(213) = DEDS(1)+SPC(120)                    1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(62)+SPC(213) = SPC(44)+SPC(120)                    1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(59)+SPC(213) = C2H5SH(52)+SPC(120)                 1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(213)+SPC(35) = C2H5SH(52)+SPC(120)                 1.810e+03 	  3.15 	 -0.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , S_rad/NonDeC ]
+C2H3SJ(76)+SPC(213) = CH3CHS(55)+SPC(120)              1.090e+02 	  3.06 	  6.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/Cd ]
+SPC(77)+SPC(213) = CH3CHS(55)+SPC(120)                 6.890e+02 	  3.06 	 -1.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , S/H/Cd ]
+SPC(39)+SPC(120) = SPC(33)+SPC(213)                    1.900e+02 	  3.15 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , S_rad/Cd ]
+SPC(93)+SPC(213) = SPC(80)+SPC(120)                    2.890e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , S/H/Cd ]
+SPC(73)+SPC(213) = SPC(80)+SPC(120)                    1.810e+03 	  3.15 	 -0.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/NonDeC , S/H/Cd ]
+SPC(94)+SPC(213) = SPC(80)+SPC(120)                    1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(120)+SPC(213) = SPC(85)+SPC(120)                   1.090e+02 	  3.06 	  6.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/Cd ]
+SPC(107)+SPC(213) = SPC(85)+SPC(120)                   1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(148)+SPC(213) = C4H8S2(67)+SPC(120)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+C2H3SJ(76)+SPC(213) = SPC(103)+SPC(120)                7.890e+02 	  3.15 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/Cd , S/H/Cd ]
+SPC(193)+SPC(213) = SPC(207)+SPC(120)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(120)+SPC(35) = SPC(213)+CH3CHS(55)                 1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -30.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -35.9 kcal/mol to 0.0.
+SPC(120)+SPC(34) = SPC(213)+C4H8S2(67)                 6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+SPC(120)+SPC(73) = SPC(213)+SPC(85)                    3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H/NdNd_Rrad ]
+SPC(120)+SPC(59) = SPC(213)+SPC(103)                   6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+SPC(120)+SPC(59) = SPC(213)+CH3CHS(55)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -38.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -45.4 kcal/mol to 0.0.
+SPC(120)+SPC(93) = SPC(213)+SPC(213)                   7.630e+11 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H/NdNd_Csrad ]
+SPC(120)+SPC(93) = SPC(85)+SPC(213)                    7.830e+11 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H/NdNd_Csrad ]
+SPC(193) = SPC(230)                                    7.220e-02 	  4.07 	  20.90 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , S_H_out ]
+SPC(230)+SPC(39) = SPC(207)+SPC(33)                    6.170e+02 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/NonDeC , S/H/NonDeS ]
+SPC(230)+C2H5SH(52) = SPC(207)+SPC(35)                 6.680e+02 	  3.15 	  1.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/NonDeC , S/H/NonDeC ]
+SPC(207)+SPC(34) = SPC(230)+DEDS(1)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(207)+SPC(73) = SPC(230)+SPC(80)                    6.680e+02 	  3.15 	  1.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_rad/NonDeC ]
+SPC(207)+SPC(77) = SPC(230)+CH3CHS(55)                 4.970e+02 	  3.06 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , CS_rad/Cs ]
+SPC(207)+SPC(107) = SPC(230)+SPC(85)                   8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(207)+SPC(59) = SPC(230)+C2H5SH(52)                 8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(207)+SPC(62) = SPC(230)+SPC(44)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(207)+SPC(94) = SPC(230)+SPC(80)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(207)+SPC(148) = SPC(230)+C4H8S2(67)                8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(207)+C2H3SJ(76) = SPC(230)+SPC(103)                6.750e+02 	  3.15 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_rad/Cd ]
+SPC(207)+C2H3SJ(76) = SPC(230)+CH3CHS(55)              2.320e+02 	  3.06 	  9.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H2/CS ]
+SPC(207)+SPC(93) = SPC(230)+SPC(80)                    2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H2/Cs ]
+SPC(207)+SPC(193) = SPC(230)+SPC(207)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(35)+SPC(230) = CH3CHS(55)+SPC(207)                 1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , S_rad/NonDeC ] Ea computed using Evans-Polanyi dHrxn(298K) = -42.0 kcal/mol and alpha = 1.19. Warning: Ea raised from -49.5 kcal/mol to 0.0.
+SPC(59)+SPC(230) = CH3CHS(55)+SPC(207)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , S_rad/NonDeC ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.0 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.0 kcal/mol to 0.0.
+SPC(73)+SPC(230) = SPC(85)+SPC(207)                    3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , S_rad/NonDeC ]
+SPC(34)+SPC(230) = C4H8S2(67)+SPC(207)                 6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , S_rad/NonDeC ]
+SPC(59)+SPC(230) = SPC(103)+SPC(207)                   6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , S_rad/NonDeC ]
+SPC(230)+SPC(213) = SPC(207)+SPC(120)                  1.810e+03 	  3.15 	 -0.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/NonDeC , S/H/Cd ]
+SPC(207)+SPC(120) = SPC(230)+SPC(85)                   2.320e+02 	  3.06 	  9.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H2/CS ]
+SPC(93)+SPC(230) = SPC(213)+SPC(207)                   7.630e+11 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H/NdNd_Csrad , S_rad/NonDeC ]
+SPC(193) = SPC(231)                                    6.440e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS_CsCsSCs , C_rad_out_H/NonDeS , Cs_H_out_H/NonDeC ]
+SPC(231)+SPC(39) = SPC(207)+SPC(33)                    1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(231)+C2H5SH(52) = SPC(207)+SPC(35)                 8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(207)+SPC(34) = SPC(231)+DEDS(1)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(231)+SPC(80) = SPC(207)+SPC(73)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(207)+SPC(77) = SPC(231)+CH3CHS(55)                 1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , CS_rad/Cs ]
+SPC(207)+SPC(107) = SPC(231)+SPC(85)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(207)+SPC(59) = SPC(231)+C2H5SH(52)                 1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(231)+SPC(44) = SPC(207)+SPC(62)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(207)+SPC(94) = SPC(231)+SPC(80)                    2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(207)+SPC(148) = SPC(231)+C4H8S2(67)                2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(231)+SPC(103) = SPC(207)+C2H3SJ(76)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(207)+C2H3SJ(76) = SPC(231)+CH3CHS(55)              3.300e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/CS ]
+SPC(207)+SPC(93) = SPC(231)+SPC(80)                    8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/Cs ]
+SPC(207)+SPC(193) = SPC(231)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(35)+SPC(231) = CH3CHS(55)+SPC(207)                 2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(231) = CH3CHS(55)+SPC(207)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.0 kcal/mol to 0.0.
+SPC(73)+SPC(231) = SPC(85)+SPC(207)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(34)+SPC(231) = C4H8S2(67)+SPC(207)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(59)+SPC(231) = SPC(103)+SPC(207)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(231)+SPC(213) = SPC(207)+SPC(120)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(231)+SPC(85) = SPC(207)+SPC(120)                   2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H3/CS ]
+SPC(93)+SPC(231) = SPC(213)+SPC(207)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Csrad , C_rad/H/CsS ]
+SPC(231)+SPC(207) = SPC(207)+SPC(230)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(231) = SPC(230)                                    2.210e+10 	  0.21 	  2.04 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_H/NonDeC , S_H_out ]
+SPC(93) = SPC(221)                                     3.078e+11 	  0.16 	  26.90 		0.0	0.0	0.0	//intra_substitutionS_isomerization estimate: (Average:)  [ XSR3J_S , CsJ-3-CsHH , S-HC ]
+SPC(193) = SPC(221)                                    1.505e+04 	  2.69 	  36.80 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeS , Cs_H_out_H/NonDeS ]
+SPC(221)+SPC(39) = SPC(207)+SPC(33)                    1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(221)+C2H5SH(52) = SPC(207)+SPC(35)                 8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(207)+SPC(34) = SPC(221)+DEDS(1)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(221)+SPC(80) = SPC(207)+SPC(73)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(207)+SPC(77) = SPC(221)+CH3CHS(55)                 1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , CS_rad/Cs ]
+SPC(207)+SPC(107) = SPC(221)+SPC(85)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(207)+SPC(59) = SPC(221)+C2H5SH(52)                 1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(221)+SPC(44) = SPC(207)+SPC(62)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(207)+SPC(94) = SPC(221)+SPC(80)                    2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(207)+SPC(148) = SPC(221)+C4H8S2(67)                2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(221)+SPC(103) = SPC(207)+C2H3SJ(76)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(207)+C2H3SJ(76) = SPC(221)+CH3CHS(55)              3.300e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/CS ]
+SPC(207)+SPC(93) = SPC(221)+SPC(80)                    8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/Cs ]
+SPC(207)+SPC(193) = SPC(221)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(35)+SPC(221) = CH3CHS(55)+SPC(207)                 2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(221) = CH3CHS(55)+SPC(207)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.0 kcal/mol to 0.0.
+SPC(73)+SPC(221) = SPC(85)+SPC(207)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(34)+SPC(221) = C4H8S2(67)+SPC(207)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(59)+SPC(221) = SPC(103)+SPC(207)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(221)+SPC(213) = SPC(207)+SPC(120)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(221)+SPC(85) = SPC(207)+SPC(120)                   2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H3/CS ]
+SPC(93)+SPC(221) = SPC(213)+SPC(207)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Csrad , C_rad/H/CsS ]
+SPC(221)+SPC(207) = SPC(207)+SPC(230)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(221) = SPC(230)                                    2.649e-01 	  3.80 	  13.84 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_Cs , C_rad_out_H/NonDeS , S_H_out ]
+SPC(207)+SPC(231) = SPC(221)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(231) = SPC(221)                                    1.650e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_S , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(33)+SPC(62) = SPC(39)+SPC(104)                     6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cmethyl_Csrad ]
+SPC(35)+SPC(62) = C2H5SH(52)+SPC(104)                  6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(34)+SPC(62) = DEDS(1)+SPC(104)                     1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(73)+SPC(62) = SPC(80)+SPC(104)                     6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(77)+SPC(62) = CH3CHS(55)+SPC(104)                  6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , Cmethyl_Csrad ]
+SPC(107)+SPC(62) = SPC(85)+SPC(104)                    1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(59)+SPC(62) = C2H5SH(52)+SPC(104)                  1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(62)+SPC(62) = SPC(44)+SPC(104)                     1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(94)+SPC(62) = SPC(80)+SPC(104)                     1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+C4H8S2(67)+C2H5(32) = SPC(104)+SPC(35)                 3.417e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cds(H)Ss(Cs) , CsJ-CsHH ]
+SPC(148)+SPC(62) = C4H8S2(67)+SPC(104)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+C2H3SJ(76)+C2H5(32) = SPC(104)                         1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-Cd , C_rad/H2/Cs ]
+C2H3SJ(76)+SPC(62) = SPC(103)+SPC(104)                 6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+C2H3SJ(76)+SPC(62) = CH3CHS(55)+SPC(104)               6.870e+13 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , Cmethyl_Csrad ]
+SPC(93)+SPC(62) = SPC(80)+SPC(104)                     6.900e+13 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , Cmethyl_Csrad ]
+SPC(193)+SPC(62) = SPC(207)+SPC(104)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(120)+SPC(62) = SPC(213)+SPC(104)                   6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+SPC(120)+SPC(62) = SPC(85)+SPC(104)                    6.870e+13 	 -0.35 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , Cmethyl_Csrad ]
+SPC(230)+SPC(62) = SPC(207)+SPC(104)                   6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(231)+SPC(62) = SPC(207)+SPC(104)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(221)+SPC(62) = SPC(207)+SPC(104)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SH(26)+C2H5(32) = C2H5SH(52)                           1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-H , C_rad/H2/Cs ]
+SH(26)+SPC(35) = SPC(39)                               1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-H , SsJ-Cs ]
+SPC(39)+C2H5(32) = SH(26)+SPC(44)                      3.417e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(H) , CsJ-CsHH ]
+SPC(39)+SPC(35) = SH(26)+DEDS(1)                       5.580e+00 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(H) , SsJ-Cs ]
+SPC(62)+SH(26) = SPC(80)                               1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ CsJ-CsSsH , SsJ-H ]
+SPC(39)+SPC(77) = SH(26)+SPC(85)                       6.779e+01 	  2.88 	  10.13 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(H) , C = SJ-Cs ]
+SPC(39)+SPC(59) = SH(26)+SPC(80)                       3.417e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(H) , CsJ-SsCsH ]
+SPC(39)+C2H3SJ(76) = SH(26)+C4H8S2(67)                 5.580e+00 	  3.63 	  19.84 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(H) , SsJ-Cd ]
+SPC(104)+SH(26) = SPC(93)                              2.480e+02 	  2.91 	 -0.33 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-SsH_Cds , SsJ-H ]
+SPC(104)+SH(26) = SPC(221)                             2.490e+03 	  2.70 	 -0.80 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Cds-HH_Cds-SsH , SsJ-H ]
+SPC(145)+SPC(39) = SPC(104)+SPC(33)                    1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(145)+C2H5SH(52) = SPC(104)+SPC(35)                 8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(104)+SPC(34) = SPC(145)+DEDS(1)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(145)+SPC(80) = SPC(104)+SPC(73)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(104)+SPC(77) = SPC(145)+CH3CHS(55)                 1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , CS_rad/Cs ]
+SPC(104)+SPC(107) = SPC(145)+SPC(85)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(104)+SPC(59) = SPC(145)+C2H5SH(52)                 1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(145)+SPC(44) = SPC(104)+SPC(62)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(145)+SPC(80) = SPC(104)+SPC(94)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(145)+C4H8S2(67) = SPC(104)+SPC(148)                1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(145)+SPC(103) = SPC(104)+C2H3SJ(76)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(145)+CH3CHS(55) = SPC(104)+C2H3SJ(76)              2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H3/CS ]
+SPC(104)+SPC(93) = SPC(145)+SPC(80)                    8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/Cs ]
+SPC(145)+SPC(207) = SPC(104)+SPC(193)                  1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(145)+SPC(213) = SPC(104)+SPC(120)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(145)+SPC(85) = SPC(104)+SPC(120)                   2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H3/CS ]
+SPC(145)+SPC(207) = SPC(104)+SPC(230)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(145)+SPC(207) = SPC(104)+SPC(231)                  1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(145)+SPC(207) = SPC(104)+SPC(221)                  1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(35)+SPC(145) = CH3CHS(55)+SPC(104)                 2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(145) = CH3CHS(55)+SPC(104)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -56.2 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.4 kcal/mol to 0.0.
+SPC(73)+SPC(145) = SPC(85)+SPC(104)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(34)+SPC(145) = C4H8S2(67)+SPC(104)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(59)+SPC(145) = SPC(103)+SPC(104)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(93)+SPC(145) = SPC(213)+SPC(104)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Csrad , C_rad/H/CsS ]
+SPC(62)+SPC(145) = SPC(104)+SPC(104)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(96)+C2H5(32) = SPC(80)                             8.940e+07 	  1.54 	 -1.32 		0.0	0.0	0.0	//R_Recombination exact:   [ SsJ-Cs , C_rad/H2/Cs ]
+CH3CHS(55)+SH(26) = SPC(96)                            1.180e+13 	  0.00 	 -1.36 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-CsH_Sd , SsJ-H ]
+SPC(104)+H2S(13) = SPC(80)                             3.768e+02 	  3.02 	  42.00 		0.0	0.0	0.0	//1,3_Insertion_RSR exact:   [ Cd/H2_Cd/H/Nd , H_SH ]
+SPC(145)+H2S(13) = SPC(94)                             3.768e+02 	  3.02 	  42.00 		0.0	0.0	0.0	//1,3_Insertion_RSR exact:   [ Cd/H2_Cd/H/Nd , H_SH ]
+SPC(104)+H2S(13) = SPC(207)                            2.008e+02 	  3.02 	  47.34 		0.0	0.0	0.0	//1,3_Insertion_RSR exact:   [ Cd/H/Nd_Cd/H2 , H_SH ]
+SPC(145)+H2S(13) = SPC(231)                            2.008e+02 	  3.02 	  47.34 		0.0	0.0	0.0	//1,3_Insertion_RSR exact:   [ Cd/H/Nd_Cd/H2 , H_SH ]
+SPC(34)+H2S(13) = DEDS(1)+SH(26)                       1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(62)+H2S(13) = SPC(44)+SH(26)                       1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(59)+H2S(13) = C2H5SH(52)+SH(26)                    1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+C2H5SH(52)+SH(26) = H2S(13)+SPC(35)                    9.030e+02 	  3.15 	 -0.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_pri_rad ]
+C2H3SJ(76)+H2S(13) = CH3CHS(55)+SH(26)                 1.188e+02 	  3.06 	  11.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S_pri ]
+SPC(77)+H2S(13) = CH3CHS(55)+SH(26)                    7.960e+02 	  3.06 	 -0.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , S_pri ]
+SPC(39)+SH(26) = SPC(33)+H2S(13)                       1.440e+03 	  3.15 	 -2.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , S_pri_rad ]
+SPC(93)+H2S(13) = SPC(80)+SH(26)                       3.340e+01 	  3.06 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , S_pri ]
+SPC(80)+SH(26) = SPC(73)+H2S(13)                       9.030e+02 	  3.15 	 -0.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_pri_rad ]
+SPC(94)+H2S(13) = SPC(80)+SH(26)                       1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(85)+SH(26) = SPC(120)+H2S(13)                      1.756e+02 	  3.46 	  1.51 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/CS , S_pri_rad ]
+SPC(107)+H2S(13) = SPC(85)+SH(26)                      1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(148)+H2S(13) = C4H8S2(67)+SH(26)                   1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(103)+SH(26) = C2H3SJ(76)+H2S(13)                   9.310e+02 	  3.15 	 -1.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , S_pri_rad ]
+SPC(221)+H2S(13) = SPC(207)+SH(26)                     1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(193)+H2S(13) = SPC(207)+SH(26)                     1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(207)+SH(26) = SPC(230)+H2S(13)                     9.030e+02 	  3.15 	 -0.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_pri_rad ]
+SPC(231)+H2S(13) = SPC(207)+SH(26)                     1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(213)+SH(26) = SPC(120)+H2S(13)                     9.310e+02 	  3.15 	 -1.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , S_pri_rad ]
+SPC(145)+H2S(13) = SPC(104)+SH(26)                     1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SH(26)+SPC(35) = H2S(13)+CH3CHS(55)                    1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -45.4 kcal/mol and alpha = 1.19. Warning: Ea raised from -53.5 kcal/mol to 0.0.
+SH(26)+SPC(34) = H2S(13)+C4H8S2(67)                    6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , Cmethyl_Csrad ]
+SH(26)+SPC(73) = H2S(13)+SPC(85)                       3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H/NdNd_Rrad ]
+SH(26)+SPC(59) = H2S(13)+SPC(103)                      6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , Cmethyl_Csrad ]
+SH(26)+SPC(59) = H2S(13)+CH3CHS(55)                    6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -53.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -63.0 kcal/mol to 0.0.
+SH(26)+SPC(62) = H2S(13)+SPC(104)                      6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , Cmethyl_Csrad ]
+SH(26)+SPC(93) = H2S(13)+SPC(213)                      3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H/NdNd_Csrad ]
+SPC(145) = SPC(291)                                    2.570e+11 	  0.21 	  9.00 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R4_S_D , doublebond_intra_2H_pri , radadd_intra_csHNd ]
+C2H5SH(52)+SPC(59) = SPC(105)+C2H5(32)                 3.752e+02 	  2.66 	  12.65 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-HCs(CsHH) , CsJ-SsCsH ]
+SPC(39)+SPC(59) = SPC(105)+SPC(35)                     1.010e+04 	  2.41 	  4.69 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-HSs(Cs) , CsJ-SsCsH ]
+SPC(80)+SPC(59) = SPC(62)+SPC(105)                     3.752e+02 	  2.66 	  12.65 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-HCs(NonDe) , CsJ-SsCsH ]
+SH(26)+SPC(59) = SPC(105)                              1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ SsJ-H , CsJ-CsSsH ]
+SPC(34)+SPC(105) = DEDS(1)+SPC(96)                     1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(62)+SPC(105) = SPC(44)+SPC(96)                     1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(59)+SPC(105) = C2H5SH(52)+SPC(96)                  1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+C2H5SH(52)+SPC(96) = SPC(105)+SPC(35)                  6.680e+02 	  3.15 	  1.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_rad/NonDeC ]
+C2H3SJ(76)+SPC(105) = CH3CHS(55)+SPC(96)               4.640e+02 	  3.06 	  9.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/NonDeC ]
+SPC(77)+SPC(105) = CH3CHS(55)+SPC(96)                  9.940e+02 	  3.06 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , S/H/NonDeC ]
+SPC(39)+SPC(96) = SPC(33)+SPC(105)                     6.170e+02 	  3.15 	 -2.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , S_rad/NonDeC ]
+SPC(93)+SPC(105) = SPC(80)+SPC(96)                     4.160e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , S/H/NonDeC ]
+SPC(80)+SPC(96) = SPC(73)+SPC(105)                     6.680e+02 	  3.15 	  1.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_rad/NonDeC ]
+SPC(94)+SPC(105) = SPC(80)+SPC(96)                     1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(120)+SPC(105) = SPC(85)+SPC(96)                    4.640e+02 	  3.06 	  9.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/NonDeC ]
+SPC(107)+SPC(105) = SPC(85)+SPC(96)                    1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(148)+SPC(105) = C4H8S2(67)+SPC(96)                 1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+C2H3SJ(76)+SPC(105) = SPC(103)+SPC(96)                 1.350e+03 	  3.15 	  6.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/Cd , S/H/NonDeC ]
+SPC(221)+SPC(105) = SPC(207)+SPC(96)                   1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(193)+SPC(105) = SPC(207)+SPC(96)                   1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(207)+SPC(96) = SPC(230)+SPC(105)                   6.680e+02 	  3.15 	  1.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , S_rad/NonDeC ]
+SPC(231)+SPC(105) = SPC(207)+SPC(96)                   1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(213)+SPC(96) = SPC(120)+SPC(105)                   1.810e+03 	  3.15 	 -0.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , S_rad/NonDeC ]
+SPC(145)+SPC(105) = SPC(104)+SPC(96)                   1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(96)+SPC(35) = SPC(105)+CH3CHS(55)                  1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -42.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -49.8 kcal/mol to 0.0.
+SPC(96)+SPC(34) = SPC(105)+C4H8S2(67)                  6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(96)+SPC(73) = SPC(105)+SPC(85)                     3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H/NdNd_Rrad ]
+SPC(96)+SPC(59) = SPC(105)+SPC(103)                    6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(96)+SPC(59) = SPC(105)+CH3CHS(55)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.3 kcal/mol to 0.0.
+SPC(96)+SPC(62) = SPC(105)+SPC(104)                    6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cmethyl_Csrad ]
+SPC(96)+SPC(93) = SPC(105)+SPC(213)                    7.630e+11 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/NonDeC , C/H/NdNd_Csrad ]
+SH(26)+SPC(105) = H2S(13)+SPC(96)                      1.806e+03 	  3.15 	 -0.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_pri_rad , S/H/NonDeC ]
+CH3CHS(55)+H2S(13) = SPC(105)                          1.497e-01 	  4.00 	  42.45 		0.0	0.0	0.0	//1,3_Insertion_RSR estimate: (Average:)  [ Sd_Cd/H/Nd , H_SH ]
+SPC(103)+H2S(13) = SPC(105)                            3.768e+02 	  3.02 	  42.00 		0.0	0.0	0.0	//1,3_Insertion_RSR exact:   [ Cd/H2_Cd/H/Nd , H_SH ]
+SPC(49) = SPC(33)                                      2.649e-01 	  3.80 	  13.84 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_S , C_rad_out_H/NonDeC , S_H_out ]
+SPC(49)+SPC(39) = SPC(39)+SPC(33)                      1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(49)+C2H5SH(52) = SPC(39)+SPC(35)                   8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(49)+DEDS(1) = SPC(39)+SPC(34)                      3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(49)+SPC(80) = SPC(39)+SPC(73)                      8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(35)+SPC(49) = CH3CHS(55)+SPC(39)                   2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(49) = CH3CHS(55)+SPC(39)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -59.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -70.4 kcal/mol to 0.0.
+SPC(49)+CH3CHS(55) = SPC(39)+SPC(77)                   4.360e-10 	  4.56 	  4.77 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , CS/H/NonDeC ]
+SPC(49)+SPC(85) = SPC(39)+SPC(107)                     1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(73)+SPC(49) = SPC(85)+SPC(39)                      6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(49)+C2H5SH(52) = SPC(39)+SPC(59)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(49)+SPC(44) = SPC(39)+SPC(62)                      3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(49)+SPC(80) = SPC(39)+SPC(94)                      1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(34)+SPC(49) = C4H8S2(67)+SPC(39)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(49)+C4H8S2(67) = SPC(39)+SPC(148)                  1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(49)+SPC(103) = SPC(39)+C2H3SJ(76)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(49)+CH3CHS(55) = SPC(39)+C2H3SJ(76)                2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H3/CS ]
+SPC(59)+SPC(49) = SPC(103)+SPC(39)                     1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(39)+SPC(93) = SPC(49)+SPC(80)                      8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/Cs ]
+SPC(49)+SPC(207) = SPC(39)+SPC(193)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(49)+SPC(213) = SPC(39)+SPC(120)                    1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(49)+SPC(85) = SPC(39)+SPC(120)                     2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H3/CS ]
+SPC(93)+SPC(49) = SPC(213)+SPC(39)                     6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Csrad , C_rad/H/CsS ]
+SPC(49)+SPC(207) = SPC(39)+SPC(230)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(49)+SPC(207) = SPC(39)+SPC(231)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(49)+SPC(207) = SPC(39)+SPC(221)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(62)+SPC(49) = SPC(104)+SPC(39)                     1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(49)+H2S(13) = SPC(39)+SH(26)                       1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+CH3CHS(55)+SH(26) = SPC(49)                            3.331e+02 	  2.97 	 -2.63 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_Cds-CsH , SsJ-H ]
+SPC(49)+SPC(104) = SPC(39)+SPC(145)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(49)+SPC(105) = SPC(39)+SPC(96)                     1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(96) = SPC(49)                                      3.078e+11 	  0.16 	  26.90 		0.0	0.0	0.0	//intra_substitutionS_isomerization estimate: (Average:)  [ XSR3J_S , SsJ-3-Cs , S-HC ]
+SPC(298) = SPC(96)                                     1.444e-01 	  4.07 	  20.90 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_NonDe , S_H_out ]
+SPC(298)+SPC(39) = SPC(105)+SPC(33)                    6.550e+01 	  3.06 	 -5.80 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/CsS2 , S/H/NonDeS ]
+SPC(298)+C2H5SH(52) = SPC(105)+SPC(35)                 2.480e+01 	  3.06 	 -1.80 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/CsS2 , S/H/NonDeC ]
+SPC(105)+SPC(34) = SPC(298)+DEDS(1)                    3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(298)+SPC(80) = SPC(105)+SPC(73)                    2.480e+01 	  3.06 	 -1.80 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/CsS2 , S/H/NonDeC ]
+SPC(105)+SPC(77) = SPC(298)+CH3CHS(55)                 3.080e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , CS_rad/Cs ]
+SPC(105)+SPC(107) = SPC(298)+SPC(85)                   3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(105)+SPC(59) = SPC(298)+C2H5SH(52)                 3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(105)+SPC(62) = SPC(298)+SPC(44)                    3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(105)+SPC(94) = SPC(298)+SPC(80)                    3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(105)+SPC(148) = SPC(298)+C4H8S2(67)                3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(105)+C2H3SJ(76) = SPC(298)+SPC(103)                5.853e+01 	  3.46 	  1.66 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , S_rad/Cd ] Warning: Ea raised by 0.1 from 1.5 to dHrxn(298K) = 1.7 kcal/mol.
+SPC(105)+C2H3SJ(76) = SPC(298)+CH3CHS(55)              6.030e-04 	  4.34 	  11.90 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H2/CS ]
+SPC(105)+SPC(93) = SPC(298)+SPC(80)                    1.410e-05 	  4.83 	  4.37 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H2/Cs ]
+SPC(105)+SPC(193) = SPC(298)+SPC(207)                  3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(298)+SPC(213) = SPC(105)+SPC(120)                  3.830e+01 	  3.06 	 -3.50 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/CsS2 , S/H/Cd ]
+SPC(105)+SPC(120) = SPC(298)+SPC(85)                   6.030e-04 	  4.34 	  11.90 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H2/CS ]
+SPC(298)+SPC(207) = SPC(105)+SPC(230)                  2.480e+01 	  3.06 	 -1.80 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/CsS2 , S/H/NonDeC ]
+SPC(105)+SPC(231) = SPC(298)+SPC(207)                  3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(105)+SPC(221) = SPC(298)+SPC(207)                  3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(105)+SH(26) = SPC(298)+H2S(13)                     1.110e+05 	  2.47 	  0.74 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , S_pri_rad ]
+SPC(105)+SPC(145) = SPC(298)+SPC(104)                  3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(298)+SPC(105) = SPC(105)+SPC(96)                   4.960e+01 	  3.06 	 -1.80 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/CsS2 , S/H/NonDeC ]
+SPC(35)+SPC(298) = CH3CHS(55)+SPC(105)                 7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/NonDeC ]
+SPC(59)+SPC(298) = CH3CHS(55)+SPC(105)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/NonDeC ] Ea computed using Evans-Polanyi dHrxn(298K) = -53.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -62.9 kcal/mol to 0.0.
+SPC(73)+SPC(298) = SPC(85)+SPC(105)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/NonDeC ]
+SPC(34)+SPC(298) = C4H8S2(67)+SPC(105)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/NonDeC ]
+SPC(59)+SPC(298) = SPC(103)+SPC(105)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/NonDeC ]
+SPC(93)+SPC(298) = SPC(213)+SPC(105)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Csrad , C_rad/NonDeC ]
+SPC(62)+SPC(298) = SPC(104)+SPC(105)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/NonDeC ]
+SPC(105)+SPC(49) = SPC(298)+SPC(39)                    3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+C2H3SJ(76)+SPC(35) = SPC(181)                          1.000e+13 	  0.00 	  0.00 		0.0	0.0	0.0	//R_Recombination estimate: (Average:)  [ C_rad/H2/Cd , SsJ-Cs ]
+DEDS(1)+C2H3SJ(76) = SPC(181)+SPC(35)                  6.834e+03 	  2.69 	  4.94 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(Cs) , CsJ-C = SHH ] Warning: Ea raised by 1.5 from 3.4 to dHrxn(298K) = 4.9 kcal/mol.
+SPC(44)+C2H3SJ(76) = C2H5(32)+SPC(181)                 1.356e+02 	  2.88 	  10.57 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Cs(CsHH) , CsJ-C = SHH ] Warning: Ea raised by 0.4 from 10.1 to dHrxn(298K) = 10.6 kcal/mol.
+SPC(39)+C2H3SJ(76) = SH(26)+SPC(181)                   3.417e+03 	  2.69 	  4.90 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-Cs(CsHH)Ss(H) , CsJ-C = SHH ] Warning: Ea raised by 1.5 from 3.4 to dHrxn(298K) = 4.9 kcal/mol.
+SPC(80)+C2H3SJ(76) = SPC(59)+SPC(181)                  6.779e+01 	  2.88 	  10.13 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsCs , CsJ-C = SHH ]
+SPC(85)+C2H3SJ(76) = SPC(77)+SPC(181)                  6.779e+01 	  2.88 	  16.28 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsC = S , CsJ-C = SHH ] Warning: Ea raised by 6.2 from 10.1 to dHrxn(298K) = 16.3 kcal/mol.
+C4H8S2(67)+C2H3SJ(76) = C2H3SJ(76)+SPC(181)            3.417e+03 	  2.69 	  3.40 		0.0	0.0	0.0	//SubstitutionS estimate: (Average:)  [ S-CsSs , CsJ-C = SHH ]
+SPC(33)+SPC(193) = SPC(39)+SPC(181)                    6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/NonDeS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -33.8 kcal/mol and alpha = 1.19. Warning: Ea raised from -39.7 kcal/mol to 0.0.
+SPC(35)+SPC(193) = C2H5SH(52)+SPC(181)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -48.4 kcal/mol and alpha = 1.19. Warning: Ea raised from -57.1 kcal/mol to 0.0.
+SPC(34)+SPC(193) = DEDS(1)+SPC(181)                    6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -59.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -70.6 kcal/mol to 0.0.
+SPC(73)+SPC(193) = SPC(80)+SPC(181)                    6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -49.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -58.5 kcal/mol to 0.0.
+SPC(77)+SPC(193) = CH3CHS(55)+SPC(181)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -56.2 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.3 kcal/mol to 0.0.
+SPC(107)+SPC(193) = SPC(85)+SPC(181)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -56.0 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.1 kcal/mol to 0.0.
+SPC(59)+SPC(193) = C2H5SH(52)+SPC(181)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -56.4 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.6 kcal/mol to 0.0.
+SPC(62)+SPC(193) = SPC(44)+SPC(181)                    6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.3 kcal/mol to 0.0.
+SPC(94)+SPC(193) = SPC(80)+SPC(181)                    6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.6 kcal/mol to 0.0.
+SPC(148)+SPC(193) = C4H8S2(67)+SPC(181)                6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.6 kcal/mol to 0.0.
+C2H3SJ(76)+SPC(193) = SPC(103)+SPC(181)                6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -51.2 kcal/mol and alpha = 1.19. Warning: Ea raised from -60.4 kcal/mol to 0.0.
+C2H3SJ(76)+SPC(193) = CH3CHS(55)+SPC(181)              6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cd , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.0 kcal/mol and alpha = 1.19. Warning: Ea raised from -64.9 kcal/mol to 0.0.
+SPC(93)+SPC(193) = SPC(80)+SPC(181)                    6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -63.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -75.3 kcal/mol to 0.0.
+SPC(193)+SPC(193) = SPC(207)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.6 kcal/mol to 0.0.
+SPC(120)+SPC(193) = SPC(213)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -38.2 kcal/mol and alpha = 1.19. Warning: Ea raised from -44.9 kcal/mol to 0.0.
+SPC(120)+SPC(193) = SPC(85)+SPC(181)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cd , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -51.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -60.5 kcal/mol to 0.0.
+SPC(33)+SPC(230) = SPC(39)+SPC(181)                    1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -27.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -32.7 kcal/mol to 0.0.
+SPC(35)+SPC(230) = C2H5SH(52)+SPC(181)                 1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -42.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -50.1 kcal/mol to 0.0.
+SPC(34)+SPC(230) = DEDS(1)+SPC(181)                    2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(73)+SPC(230) = SPC(80)+SPC(181)                    1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -43.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -51.5 kcal/mol to 0.0.
+SPC(77)+SPC(230) = CH3CHS(55)+SPC(181)                 6.118e+11 	 -0.02 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.3 kcal/mol and alpha = 0.15. Warning: Ea raised from -7.4 kcal/mol to 0.0.
+SPC(107)+SPC(230) = SPC(85)+SPC(181)                   2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(59)+SPC(230) = C2H5SH(52)+SPC(181)                 2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(62)+SPC(230) = SPC(44)+SPC(181)                    2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(94)+SPC(230) = SPC(80)+SPC(181)                    2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(148)+SPC(230) = C4H8S2(67)+SPC(181)                2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+C2H3SJ(76)+SPC(230) = SPC(103)+SPC(181)                1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -45.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -53.4 kcal/mol to 0.0.
+C2H3SJ(76)+SPC(230) = CH3CHS(55)+SPC(181)              7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cd , C/H2/Nd_Srad ]
+SPC(93)+SPC(230) = SPC(80)+SPC(181)                    7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/Nd_Srad ]
+SPC(230)+SPC(193) = SPC(207)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -49.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -58.5 kcal/mol to 0.0.
+SPC(120)+SPC(230) = SPC(213)+SPC(181)                  1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -32.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -37.9 kcal/mol to 0.0.
+SPC(120)+SPC(230) = SPC(85)+SPC(181)                   7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cd , C/H2/Nd_Srad ]
+SPC(230)+SPC(230) = SPC(207)+SPC(181)                  1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -43.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -51.5 kcal/mol to 0.0.
+SPC(231)+SPC(193) = SPC(207)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.6 kcal/mol to 0.0.
+SPC(231)+SPC(230) = SPC(207)+SPC(181)                  2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(221)+SPC(193) = SPC(207)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.6 kcal/mol to 0.0.
+SPC(221)+SPC(230) = SPC(207)+SPC(181)                  2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SH(26)+SPC(193) = H2S(13)+SPC(181)                     6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -52.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -62.5 kcal/mol to 0.0.
+SH(26)+SPC(230) = H2S(13)+SPC(181)                     1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -47.1 kcal/mol and alpha = 1.19. Warning: Ea raised from -55.5 kcal/mol to 0.0.
+SPC(145)+SPC(193) = SPC(104)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.8 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.9 kcal/mol to 0.0.
+SPC(145)+SPC(230) = SPC(104)+SPC(181)                  2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(96)+SPC(193) = SPC(105)+SPC(181)                   6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -49.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -58.9 kcal/mol to 0.0.
+SPC(96)+SPC(230) = SPC(105)+SPC(181)                   1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -44.0 kcal/mol and alpha = 1.19. Warning: Ea raised from -51.9 kcal/mol to 0.0.
+SPC(49)+SPC(193) = SPC(39)+SPC(181)                    6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -59.2 kcal/mol and alpha = 1.19. Warning: Ea raised from -69.9 kcal/mol to 0.0.
+SPC(49)+SPC(230) = SPC(39)+SPC(181)                    2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(298)+SPC(193) = SPC(105)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/NonDeC , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -52.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -62.4 kcal/mol to 0.0.
+SPC(298)+SPC(230) = SPC(105)+SPC(181)                  7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/NonDeC , C/H2/Nd_Srad ]
+SPC(321)+SPC(39) = SPC(181)+SPC(33)                    2.330e+02 	  3.06 	  9.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CSS , S/H/NonDeS ]
+SPC(181)+SPC(35) = SPC(321)+C2H5SH(52)                 3.760e-02 	  4.57 	  4.06 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , S_rad/NonDeC ]
+SPC(181)+SPC(34) = SPC(321)+DEDS(1)                    8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(73) = SPC(321)+SPC(80)                    3.760e-02 	  4.57 	  4.06 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , S_rad/NonDeC ]
+SPC(181)+SPC(77) = SPC(321)+CH3CHS(55)                 2.780e-02 	  4.34 	  6.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , CS_rad/Cs ]
+SPC(181)+SPC(107) = SPC(321)+SPC(85)                   8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(59) = SPC(321)+C2H5SH(52)                 8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(62) = SPC(321)+SPC(44)                    8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(94) = SPC(321)+SPC(80)                    8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(148) = SPC(321)+C4H8S2(67)                8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+C2H3SJ(76) = SPC(321)+SPC(103)                3.760e-02 	  4.57 	  4.06 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , S_rad/Cd ]
+SPC(181)+C2H3SJ(76) = SPC(321)+CH3CHS(55)              2.980e-03 	  4.34 	  6.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H2/CS ]
+SPC(181)+SPC(93) = SPC(321)+SPC(80)                    1.658e-03 	  4.34 	  1.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H2/Cs ]
+SPC(181)+SPC(193) = SPC(321)+SPC(207)                  8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(120) = SPC(321)+SPC(213)                  3.760e-02 	  4.57 	  4.06 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , S_rad/Cd ]
+SPC(181)+SPC(120) = SPC(321)+SPC(85)                   2.980e-03 	  4.34 	  6.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H2/CS ]
+SPC(181)+SPC(230) = SPC(321)+SPC(207)                  3.760e-02 	  4.57 	  4.06 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , S_rad/NonDeC ]
+SPC(181)+SPC(231) = SPC(321)+SPC(207)                  8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(221) = SPC(321)+SPC(207)                  8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SH(26) = SPC(321)+H2S(13)                     1.922e+02 	  3.34 	 -0.27 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , S_pri_rad ]
+SPC(181)+SPC(145) = SPC(321)+SPC(104)                  8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(96) = SPC(321)+SPC(105)                   3.760e-02 	  4.57 	  4.06 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , S_rad/NonDeC ]
+SPC(181)+SPC(49) = SPC(321)+SPC(39)                    8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(181)+SPC(298) = SPC(321)+SPC(105)                  7.550e-04 	  4.34 	 -1.13 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , C_rad/CsS2 ]
+SPC(35)+SPC(321) = CH3CHS(55)+SPC(181)                 1.526e+12 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Srad , C_rad/H/OneDe ]
+SPC(59)+SPC(321) = CH3CHS(55)+SPC(181)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/OneDe ] Ea computed using Evans-Polanyi dHrxn(298K) = -34.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -40.6 kcal/mol to 0.0.
+SPC(73)+SPC(321) = SPC(85)+SPC(181)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/OneDe ]
+SPC(34)+SPC(321) = C4H8S2(67)+SPC(181)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/OneDe ]
+SPC(59)+SPC(321) = SPC(103)+SPC(181)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/OneDe ]
+SPC(93)+SPC(321) = SPC(213)+SPC(181)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Csrad , C_rad/H/OneDe ]
+SPC(62)+SPC(321) = SPC(104)+SPC(181)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/OneDe ]
+SPC(230)+SPC(321) = SPC(181)+SPC(181)                  1.526e+12 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Srad , C_rad/H/OneDe ]
+SPC(193)+SPC(321) = SPC(181)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/OneDe ] Ea computed using Evans-Polanyi dHrxn(298K) = -34.2 kcal/mol and alpha = 1.19. Warning: Ea raised from -40.1 kcal/mol to 0.0.
+SPC(33)+SPC(193) = SPC(39)+SPC(225)                    1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -34.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -40.7 kcal/mol to 0.0.
+SPC(35)+SPC(193) = C2H5SH(52)+SPC(225)                 1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -49.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -58.1 kcal/mol to 0.0.
+SPC(34)+SPC(193) = DEDS(1)+SPC(225)                    6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(73)+SPC(193) = SPC(80)+SPC(225)                    1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.5 kcal/mol to 0.0.
+SPC(77)+SPC(193) = CH3CHS(55)+SPC(225)                 6.118e+11 	 -0.02 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -57.0 kcal/mol and alpha = 0.15. Warning: Ea raised from -8.4 kcal/mol to 0.0.
+SPC(107)+SPC(193) = SPC(85)+SPC(225)                   6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(59)+SPC(193) = C2H5SH(52)+SPC(225)                 6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(62)+SPC(193) = SPC(44)+SPC(225)                    6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(94)+SPC(193) = SPC(80)+SPC(225)                    6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(148)+SPC(193) = C4H8S2(67)+SPC(225)                6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+C2H3SJ(76)+SPC(193) = SPC(103)+SPC(225)                1.438e+00 	  3.13 	 -3.65 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H2/Nd_Csrad ]
+C2H3SJ(76)+SPC(193) = CH3CHS(55)+SPC(225)              2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H2/Nd_Csrad ]
+SPC(93)+SPC(193) = SPC(80)+SPC(225)                    2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(193)+SPC(193) = SPC(207)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(120)+SPC(193) = SPC(213)+SPC(225)                  1.438e+00 	  3.13 	 -3.65 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H2/Nd_Csrad ]
+SPC(120)+SPC(193) = SPC(85)+SPC(225)                   2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H2/Nd_Csrad ]
+SPC(230)+SPC(193) = SPC(207)+SPC(225)                  1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.5 kcal/mol to 0.0.
+SPC(231)+SPC(193) = SPC(207)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(33)+SPC(221) = SPC(39)+SPC(225)                    1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -34.6 kcal/mol and alpha = 1.19. Warning: Ea raised from -40.7 kcal/mol to 0.0.
+SPC(35)+SPC(221) = C2H5SH(52)+SPC(225)                 1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -49.3 kcal/mol and alpha = 1.19. Warning: Ea raised from -58.1 kcal/mol to 0.0.
+SPC(34)+SPC(221) = DEDS(1)+SPC(225)                    6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(73)+SPC(221) = SPC(80)+SPC(225)                    1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.5 kcal/mol to 0.0.
+SPC(77)+SPC(221) = CH3CHS(55)+SPC(225)                 6.118e+11 	 -0.02 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Y_rad , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -57.0 kcal/mol and alpha = 0.15. Warning: Ea raised from -8.4 kcal/mol to 0.0.
+SPC(107)+SPC(221) = SPC(85)+SPC(225)                   6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(59)+SPC(221) = C2H5SH(52)+SPC(225)                 6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(62)+SPC(221) = SPC(44)+SPC(225)                    6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(94)+SPC(221) = SPC(80)+SPC(225)                    6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(148)+SPC(221) = C4H8S2(67)+SPC(225)                6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+C2H3SJ(76)+SPC(221) = SPC(103)+SPC(225)                1.438e+00 	  3.13 	 -3.65 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H2/Nd_Csrad ]
+C2H3SJ(76)+SPC(221) = CH3CHS(55)+SPC(225)              2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H2/Nd_Csrad ]
+SPC(93)+SPC(221) = SPC(80)+SPC(225)                    2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(221)+SPC(193) = SPC(207)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(120)+SPC(221) = SPC(213)+SPC(225)                  1.438e+00 	  3.13 	 -3.65 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H2/Nd_Csrad ]
+SPC(120)+SPC(221) = SPC(85)+SPC(225)                   2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H2/Nd_Csrad ]
+SPC(230)+SPC(221) = SPC(207)+SPC(225)                  1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.5 kcal/mol to 0.0.
+SPC(231)+SPC(221) = SPC(207)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(221)+SPC(221) = SPC(207)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SH(26)+SPC(193) = H2S(13)+SPC(225)                     1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -53.8 kcal/mol and alpha = 1.19. Warning: Ea raised from -63.5 kcal/mol to 0.0.
+SH(26)+SPC(221) = H2S(13)+SPC(225)                     1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -53.8 kcal/mol and alpha = 1.19. Warning: Ea raised from -63.5 kcal/mol to 0.0.
+SPC(145)+SPC(193) = SPC(104)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(145)+SPC(221) = SPC(104)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(96)+SPC(193) = SPC(105)+SPC(225)                   1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.9 kcal/mol to 0.0.
+SPC(96)+SPC(221) = SPC(105)+SPC(225)                   1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , C/H2/Nd_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -50.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -59.9 kcal/mol to 0.0.
+SPC(49)+SPC(193) = SPC(39)+SPC(225)                    6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(49)+SPC(221) = SPC(39)+SPC(225)                    6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(298)+SPC(193) = SPC(105)+SPC(225)                  7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/NonDeC , C/H2/Nd_Csrad ]
+SPC(298)+SPC(221) = SPC(105)+SPC(225)                  7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/NonDeC , C/H2/Nd_Csrad ]
+SPC(34)+SPC(225) = DEDS(1)+SPC(321)                    1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(62)+SPC(225) = SPC(44)+SPC(321)                    1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(59)+SPC(225) = C2H5SH(52)+SPC(321)                 1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(225)+SPC(35) = C2H5SH(52)+SPC(321)                 1.810e+03 	  3.15 	 -0.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , S_rad/NonDeC ]
+C2H3SJ(76)+SPC(225) = CH3CHS(55)+SPC(321)              1.090e+02 	  3.06 	  6.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/Cd ]
+SPC(77)+SPC(225) = CH3CHS(55)+SPC(321)                 6.890e+02 	  3.06 	 -1.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , S/H/Cd ]
+SPC(39)+SPC(321) = SPC(33)+SPC(225)                    1.900e+02 	  3.15 	 -0.40 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , S_rad/Cd ]
+SPC(49)+SPC(225) = SPC(39)+SPC(321)                    1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(93)+SPC(225) = SPC(80)+SPC(321)                    2.890e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , S/H/Cd ]
+SPC(73)+SPC(225) = SPC(80)+SPC(321)                    1.810e+03 	  3.15 	 -0.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/NonDeC , S/H/Cd ]
+SPC(94)+SPC(225) = SPC(80)+SPC(321)                    1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(120)+SPC(225) = SPC(85)+SPC(321)                   1.090e+02 	  3.06 	  6.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , S/H/Cd ]
+SPC(107)+SPC(225) = SPC(85)+SPC(321)                   1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(148)+SPC(225) = C4H8S2(67)+SPC(321)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+C2H3SJ(76)+SPC(225) = SPC(103)+SPC(321)                7.890e+02 	  3.15 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/Cd , S/H/Cd ]
+SPC(221)+SPC(225) = SPC(207)+SPC(321)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(193)+SPC(225) = SPC(207)+SPC(321)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(230)+SPC(225) = SPC(207)+SPC(321)                  1.810e+03 	  3.15 	 -0.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/NonDeC , S/H/Cd ]
+SPC(231)+SPC(225) = SPC(207)+SPC(321)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(120)+SPC(225) = SPC(213)+SPC(321)                  7.890e+02 	  3.15 	  1.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/Cd , S/H/Cd ]
+SPC(145)+SPC(225) = SPC(104)+SPC(321)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SH(26)+SPC(225) = H2S(13)+SPC(321)                     9.310e+02 	  3.15 	 -1.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_pri_rad , S/H/Cd ]
+SPC(298)+SPC(225) = SPC(105)+SPC(321)                  3.830e+01 	  3.06 	 -3.50 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/CsS2 , S/H/Cd ]
+SPC(96)+SPC(225) = SPC(105)+SPC(321)                   1.810e+03 	  3.15 	 -0.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_rad/NonDeC , S/H/Cd ]
+SPC(181)+SPC(321) = SPC(321)+SPC(225)                  3.760e-02 	  4.57 	  4.06 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , S_rad/Cd ]
+SPC(321)+SPC(35) = SPC(225)+CH3CHS(55)                 1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -27.4 kcal/mol and alpha = 1.19. Warning: Ea raised from -32.1 kcal/mol to 0.0.
+SPC(321)+SPC(34) = SPC(225)+C4H8S2(67)                 6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+SPC(321)+SPC(73) = SPC(225)+SPC(85)                    3.678e+11 	 -0.04 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H/NdNd_Rrad ]
+SPC(321)+SPC(59) = SPC(225)+SPC(103)                   6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+SPC(321)+SPC(59) = SPC(225)+CH3CHS(55)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -35.4 kcal/mol and alpha = 1.19. Warning: Ea raised from -41.6 kcal/mol to 0.0.
+SPC(321)+SPC(62) = SPC(225)+SPC(104)                   6.272e+12 	  0.00 	  2.67 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cmethyl_Csrad ]
+SPC(321)+SPC(93) = SPC(225)+SPC(213)                   7.630e+11 	  0.00 	 -0.55 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H/NdNd_Csrad ]
+SPC(321)+SPC(193) = SPC(225)+SPC(225)                  1.438e+00 	  3.13 	 -3.65 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H2/Nd_Csrad ]
+SPC(321)+SPC(193) = SPC(225)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -35.0 kcal/mol and alpha = 1.19. Warning: Ea raised from -41.1 kcal/mol to 0.0.
+SPC(321)+SPC(230) = SPC(225)+SPC(181)                  1.288e+09 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , C/H2/Nd_Srad ] Ea computed using Evans-Polanyi dHrxn(298K) = -29.1 kcal/mol and alpha = 1.19. Warning: Ea raised from -34.1 kcal/mol to 0.0.
+SPC(321)+SPC(221) = SPC(225)+SPC(225)                  1.438e+00 	  3.13 	 -3.65 		0.0	0.0	0.0	//Disproportionation exact:   [ S_rad/OneDe , C/H2/Nd_Csrad ]
+SPC(321)+SPC(221) = SPC(181)+SPC(225)                  7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDe , C/H2/Nd_Csrad ]
+SPC(337) = SPC(321)                                    2.210e+10 	  0.21 	  2.04 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSMS , C_rad_out_H/NonDeC , S_H_out ]
+SPC(337)+SPC(39) = SPC(225)+SPC(33)                    1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(337)+C2H5SH(52) = SPC(225)+SPC(35)                 8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(225)+SPC(34) = SPC(337)+DEDS(1)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(337)+SPC(80) = SPC(225)+SPC(73)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(225)+SPC(77) = SPC(337)+CH3CHS(55)                 1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , CS_rad/Cs ]
+SPC(225)+SPC(107) = SPC(337)+SPC(85)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(225)+SPC(59) = SPC(337)+C2H5SH(52)                 1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(337)+SPC(44) = SPC(225)+SPC(62)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(225)+SPC(94) = SPC(337)+SPC(80)                    2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(225)+SPC(148) = SPC(337)+C4H8S2(67)                2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(337)+SPC(103) = SPC(225)+C2H3SJ(76)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(225)+C2H3SJ(76) = SPC(337)+CH3CHS(55)              3.300e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/CS ]
+SPC(225)+SPC(93) = SPC(337)+SPC(80)                    8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/Cs ]
+SPC(225)+SPC(193) = SPC(337)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(337)+SPC(213) = SPC(225)+SPC(120)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(337)+SPC(85) = SPC(225)+SPC(120)                   2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H3/CS ]
+SPC(337)+SPC(207) = SPC(225)+SPC(230)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(225)+SPC(231) = SPC(337)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(225)+SPC(221) = SPC(337)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(337)+H2S(13) = SPC(225)+SH(26)                     1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(225)+SPC(145) = SPC(337)+SPC(104)                  1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(337)+SPC(105) = SPC(225)+SPC(96)                   1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(225)+SPC(49) = SPC(337)+SPC(39)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(337)+SPC(105) = SPC(225)+SPC(298)                  3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/H/CsS , C/H/CsS2 ]
+SPC(337)+SPC(225) = SPC(225)+SPC(321)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(337)+SPC(181) = SPC(225)+SPC(321)                  8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CSS ]
+SPC(35)+SPC(337) = CH3CHS(55)+SPC(225)                 2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(337) = CH3CHS(55)+SPC(225)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.0 kcal/mol to 0.0.
+SPC(73)+SPC(337) = SPC(85)+SPC(225)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(34)+SPC(337) = C4H8S2(67)+SPC(225)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(59)+SPC(337) = SPC(103)+SPC(225)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(93)+SPC(337) = SPC(213)+SPC(225)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Csrad , C_rad/H/CsS ]
+SPC(62)+SPC(337) = SPC(104)+SPC(225)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(230)+SPC(337) = SPC(181)+SPC(225)                  2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(193)+SPC(337) = SPC(181)+SPC(225)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.6 kcal/mol to 0.0.
+SPC(193)+SPC(337) = SPC(225)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/CsS ]
+SPC(221)+SPC(337) = SPC(225)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/CsS ]
+SPC(33)+SPC(321) = SPC(39)+SPC(330)                    3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeS , Cdpri_Rrad ]
+SPC(35)+SPC(321) = C2H5SH(52)+SPC(330)                 3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cdpri_Rrad ]
+SPC(34)+SPC(321) = DEDS(1)+SPC(330)                    3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(73)+SPC(321) = SPC(80)+SPC(330)                    3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cdpri_Rrad ]
+SPC(77)+SPC(321) = CH3CHS(55)+SPC(330)                 3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation exact:   [ Y_rad , Cdpri_Rrad ]
+SPC(107)+SPC(321) = SPC(85)+SPC(330)                   3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(59)+SPC(321) = C2H5SH(52)+SPC(330)                 3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(62)+SPC(321) = SPC(44)+SPC(330)                    3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(94)+SPC(321) = SPC(80)+SPC(330)                    3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(148)+SPC(321) = C4H8S2(67)+SPC(330)                3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+C2H3SJ(76)+SPC(321) = SPC(103)+SPC(330)                3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cdpri_Rrad ]
+C2H3SJ(76)+SPC(321) = CH3CHS(55)+SPC(330)              3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cd , Cdpri_Rrad ]
+SPC(93)+SPC(321) = SPC(80)+SPC(330)                    3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , Cdpri_Rrad ]
+SPC(193)+SPC(321) = SPC(207)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(120)+SPC(321) = SPC(213)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cdpri_Rrad ]
+SPC(120)+SPC(321) = SPC(85)+SPC(330)                   3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cd , Cdpri_Rrad ]
+SPC(230)+SPC(321) = SPC(207)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cdpri_Rrad ]
+SPC(231)+SPC(321) = SPC(207)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(221)+SPC(321) = SPC(207)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SH(26)+SPC(321) = H2S(13)+SPC(330)                     3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_pri_rad , Cdpri_Rrad ]
+SPC(145)+SPC(321) = SPC(104)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(96)+SPC(321) = SPC(105)+SPC(330)                   3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/NonDeC , Cdpri_Rrad ]
+SPC(49)+SPC(321) = SPC(39)+SPC(330)                    3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+SPC(298)+SPC(321) = SPC(105)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/NonDeC , Cdpri_Rrad ]
+SPC(321)+SPC(321) = SPC(225)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_rad/OneDe , Cdpri_Rrad ]
+SPC(321)+SPC(321) = SPC(181)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDe , Cdpri_Rrad ]
+SPC(337)+SPC(321) = SPC(225)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+CH3CHS(55)+C2H3SJ(76) = SPC(177)                       3.910e+06 	  1.66 	 -0.87 		0.0	0.0	0.0	//R_Addition_MultipleBond estimate: (Average:)  [ Sd_Cds-CsH , CsJ-C = SHH ]
+SPC(177)+SPC(39) = SPC(181)+SPC(33)                    1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeS ]
+SPC(177)+C2H5SH(52) = SPC(181)+SPC(35)                 8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(181)+SPC(34) = SPC(177)+DEDS(1)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(177)+SPC(80) = SPC(181)+SPC(73)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(181)+SPC(77) = SPC(177)+CH3CHS(55)                 1.406e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , CS_rad/Cs ]
+SPC(181)+SPC(107) = SPC(177)+SPC(85)                   1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(181)+SPC(59) = SPC(177)+C2H5SH(52)                 1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(177)+SPC(44) = SPC(181)+SPC(62)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(181)+SPC(94) = SPC(177)+SPC(80)                    2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(181)+SPC(148) = SPC(177)+C4H8S2(67)                2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(177)+SPC(103) = SPC(181)+C2H3SJ(76)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(181)+C2H3SJ(76) = SPC(177)+CH3CHS(55)              3.300e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/CS ]
+SPC(181)+SPC(93) = SPC(177)+SPC(80)                    8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H2/Cs ]
+SPC(181)+SPC(193) = SPC(177)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(177)+SPC(213) = SPC(181)+SPC(120)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(177)+SPC(85) = SPC(181)+SPC(120)                   2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H3/CS ]
+SPC(177)+SPC(207) = SPC(181)+SPC(230)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(181)+SPC(231) = SPC(177)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(181)+SPC(221) = SPC(177)+SPC(207)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(177)+H2S(13) = SPC(181)+SH(26)                     1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S_pri ]
+SPC(181)+SPC(145) = SPC(177)+SPC(104)                  1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(177)+SPC(105) = SPC(181)+SPC(96)                   1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/NonDeC ]
+SPC(181)+SPC(49) = SPC(177)+SPC(39)                    1.688e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(177)+SPC(105) = SPC(181)+SPC(298)                  3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/H/CsS , C/H/CsS2 ]
+SPC(35)+SPC(177) = CH3CHS(55)+SPC(181)                 2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(59)+SPC(177) = CH3CHS(55)+SPC(181)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.0 kcal/mol to 0.0.
+SPC(73)+SPC(177) = SPC(85)+SPC(181)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Rrad , C_rad/H/CsS ]
+SPC(34)+SPC(177) = C4H8S2(67)+SPC(181)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(59)+SPC(177) = SPC(103)+SPC(181)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(93)+SPC(177) = SPC(213)+SPC(181)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H/NdNd_Csrad , C_rad/H/CsS ]
+SPC(62)+SPC(177) = SPC(104)+SPC(181)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cmethyl_Csrad , C_rad/H/CsS ]
+SPC(230)+SPC(177) = SPC(181)+SPC(181)                  2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C/H2/Nd_Srad , C_rad/H/CsS ]
+SPC(193)+SPC(177) = SPC(181)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ S_Csrad , C_rad/H/CsS ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.6 kcal/mol to 0.0.
+SPC(177)+SPC(225) = SPC(181)+SPC(321)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , S/H/Cd ]
+SPC(177)+SPC(181) = SPC(181)+SPC(321)                  8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CSS ]
+SPC(177) = SPC(321)                                    6.820e+09 	  0.73 	  30.50 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS_S , C_rad_out_H/NonDeC , Cs_H_out_H/CS ]
+SPC(193)+SPC(177) = SPC(225)+SPC(181)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/CsS ]
+SPC(221)+SPC(177) = SPC(225)+SPC(181)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C/H2/Nd_Csrad , C_rad/H/CsS ]
+SPC(181)+SPC(337) = SPC(177)+SPC(225)                  2.532e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(321)+SPC(177) = SPC(330)+SPC(181)                  4.580e+12 	  0.00 	  6.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ Cdpri_Csrad , C_rad/H/CsS ]
+SPC(177) = SPC(371)                                    4.480e+06 	  1.17 	  0.27 		0.0	0.0	0.0	//Intra_R_Add_Endocyclic exact:   [ Cs-R5_SS_CS , thiyl_intra_H , radadd_intra_csHNd ]
+SPC(34)+SPC(275) = DEDS(1)+SPC(371)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(44)+SPC(371) = SPC(62)+SPC(275)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CsS , C_rad/H/CsS ]
+SPC(59)+SPC(275) = C2H5SH(52)+SPC(371)                 3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+C2H5SH(52)+SPC(371) = SPC(275)+SPC(35)                 8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+C2H3SJ(76)+SPC(275) = CH3CHS(55)+SPC(371)              6.600e-03 	  4.34 	  15.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/CS , C/H2/CsS ]
+SPC(77)+SPC(275) = CH3CHS(55)+SPC(371)                 2.812e-02 	  4.34 	  10.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ CS_rad/Cs , C/H2/CsS ]
+SPC(39)+SPC(371) = SPC(33)+SPC(275)                    1.640e+02 	  3.06 	 -4.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeS , C_rad/H/CsS ]
+SPC(49)+SPC(275) = SPC(39)+SPC(371)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(93)+SPC(275) = SPC(80)+SPC(371)                    1.672e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H2/CsS ]
+SPC(80)+SPC(371) = SPC(73)+SPC(275)                    8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(94)+SPC(275) = SPC(80)+SPC(371)                    3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(85)+SPC(371) = SPC(120)+SPC(275)                   2.208e-03 	  4.34 	  8.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/CS , C_rad/H/CsS ]
+SPC(107)+SPC(275) = SPC(85)+SPC(371)                   3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(148)+SPC(275) = C4H8S2(67)+SPC(371)                3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(103)+SPC(371) = C2H3SJ(76)+SPC(275)                1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , C_rad/H/CsS ]
+SPC(221)+SPC(275) = SPC(207)+SPC(371)                  3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(193)+SPC(275) = SPC(207)+SPC(371)                  3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(207)+SPC(371) = SPC(230)+SPC(275)                  8.550e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(231)+SPC(275) = SPC(207)+SPC(371)                  3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(213)+SPC(371) = SPC(120)+SPC(275)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , C_rad/H/CsS ]
+SPC(145)+SPC(275) = SPC(104)+SPC(371)                  3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+H2S(13)+SPC(371) = SH(26)+SPC(275)                     1.270e+02 	  3.06 	 -0.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ S_pri , C_rad/H/CsS ]
+SPC(105)+SPC(371) = SPC(298)+SPC(275)                  3.560e-04 	  4.34 	  3.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H/CsS ]
+SPC(105)+SPC(371) = SPC(96)+SPC(275)                   1.710e+02 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/NonDeC , C_rad/H/CsS ]
+SPC(181)+SPC(371) = SPC(321)+SPC(275)                  8.280e-04 	  4.34 	 -0.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CSS , C_rad/H/CsS ]
+SPC(177)+SPC(275) = SPC(181)+SPC(371)                  3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(225)+SPC(371) = SPC(321)+SPC(275)                  1.310e+02 	  3.06 	 -2.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ S/H/Cd , C_rad/H/CsS ]
+SPC(337)+SPC(275) = SPC(225)+SPC(371)                  3.376e-03 	  4.34 	  5.80 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CsS , C/H2/CsS ]
+SPC(371)+SPC(35) = SPC(275)+CH3CHS(55)                 2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(371)+SPC(34) = SPC(275)+C4H8S2(67)                 1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(371)+SPC(73) = SPC(275)+SPC(85)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Rrad ]
+SPC(371)+SPC(59) = SPC(275)+SPC(103)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(371)+SPC(59) = SPC(275)+CH3CHS(55)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.9 kcal/mol and alpha = 1.19. Warning: Ea raised from -66.0 kcal/mol to 0.0.
+SPC(371)+SPC(62) = SPC(275)+SPC(104)                   1.500e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cmethyl_Csrad ]
+SPC(371)+SPC(93) = SPC(275)+SPC(213)                   6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H/NdNd_Csrad ]
+SPC(371)+SPC(193) = SPC(275)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(371)+SPC(193) = SPC(275)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -55.5 kcal/mol and alpha = 1.19. Warning: Ea raised from -65.6 kcal/mol to 0.0.
+SPC(371)+SPC(230) = SPC(275)+SPC(181)                  2.433e+12 	  0.00 	 -0.10 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , C/H2/Nd_Srad ]
+SPC(371)+SPC(221) = SPC(275)+SPC(225)                  6.740e-06 	  4.35 	  1.14 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/CsS , C/H2/Nd_Csrad ]
+SPC(371)+SPC(321) = SPC(275)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/CsS , Cdpri_Rrad ]
+DEDS(1)+C2H5(32) = SPC(34)+C2H6(40)                    1.672e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+C2H5(32)+SPC(35) = C2H6(40)+CH3CHS(55)                 7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/Nd_Srad ]
+SPC(44)+C2H5(32) = SPC(62)+C2H6(40)                    1.672e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+C2H5(32)+SPC(34) = C2H6(40)+C4H8S2(67)                 6.900e+13 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , Cmethyl_Csrad ]
+C2H5SH(52)+C2H5(32) = SPC(59)+C2H6(40)                 8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+C2H5SH(52)+C2H5(32) = C2H6(40)+SPC(35)                 2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S/H/NonDeC , C_rad/H2/Cs\H3 ]
+CH3CHS(55)+C2H5(32) = C2H3SJ(76)+C2H6(40)              1.161e-03 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/CS , C_rad/H2/Cs\H3 ]
+CH3CHS(55)+C2H5(32) = SPC(77)+C2H6(40)                 3.770e-01 	  3.63 	  3.98 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ CS/H/NonDeC , C_rad/H2/Cs\H3 ]
+C2H5(32)+SPC(73) = C2H6(40)+SPC(85)                    6.020e+12 	 -0.32 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H/NdNd_Rrad ]
+SPC(39)+C2H5(32) = SPC(33)+C2H6(40)                    3.630e+01 	  3.06 	 -3.00 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S/H/NonDeS , C_rad/H2/Cs\H3 ]
+SPC(39)+C2H5(32) = SPC(49)+C2H6(40)                    8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+SPC(93)+C2H6(40) = SPC(80)+C2H5(32)                    5.520e-03 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/H2/Cs , C/H3/Cs\H3 ]
+SPC(80)+C2H5(32) = SPC(73)+C2H6(40)                    2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S/H/NonDeC , C_rad/H2/Cs\H3 ]
+SPC(80)+C2H5(32) = SPC(94)+C2H6(40)                    8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+SPC(85)+C2H5(32) = SPC(120)+C2H6(40)                   1.161e-03 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/CS , C_rad/H2/Cs\H3 ]
+SPC(85)+C2H5(32) = SPC(107)+C2H6(40)                   8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+C2H5(32)+SPC(59) = C2H6(40)+SPC(103)                   6.900e+13 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , Cmethyl_Csrad ]
+C2H5(32)+SPC(59) = C2H6(40)+CH3CHS(55)                 6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -64.1 kcal/mol and alpha = 1.19. Warning: Ea raised from -75.8 kcal/mol to 0.0.
+C2H5(32)+SPC(62) = C2H6(40)+SPC(104)                   6.900e+13 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , Cmethyl_Csrad ]
+C4H8S2(67)+C2H5(32) = SPC(148)+C2H6(40)                8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+SPC(103)+C2H5(32) = C2H3SJ(76)+C2H6(40)                2.890e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S/H/Cd , C_rad/H2/Cs\H3 ]
+C2H5(32)+SPC(93) = C2H6(40)+SPC(213)                   8.430e+11 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H/NdNd_Csrad ]
+C2H5(32)+SPC(193) = C2H6(40)+SPC(225)                  2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C2H5(32)+SPC(193) = C2H6(40)+SPC(181)                  6.440e+08 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , S_Csrad ] Ea computed using Evans-Polanyi dHrxn(298K) = -63.7 kcal/mol and alpha = 1.19. Warning: Ea raised from -75.3 kcal/mol to 0.0.
+SPC(207)+C2H5(32) = SPC(221)+C2H6(40)                  8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+SPC(207)+C2H5(32) = SPC(193)+C2H6(40)                  8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+SPC(207)+C2H5(32) = SPC(230)+C2H6(40)                  2.080e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S/H/NonDeC , C_rad/H2/Cs\H3 ]
+SPC(207)+C2H5(32) = SPC(231)+C2H6(40)                  8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+SPC(213)+C2H5(32) = SPC(120)+C2H6(40)                  2.890e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S/H/Cd , C_rad/H2/Cs\H3 ]
+C2H5(32)+SPC(230) = C2H6(40)+SPC(181)                  7.481e+12 	 -0.16 	 -0.05 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/Nd_Srad ]
+C2H5(32)+SPC(221) = C2H6(40)+SPC(225)                  2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(104)+C2H5(32) = SPC(145)+C2H6(40)                  8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+H2S(13)+C2H5(32) = SH(26)+C2H6(40)                     3.340e+01 	  3.06 	 -0.40 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S_pri , C_rad/H2/Cs\H3 ]
+SPC(105)+C2H5(32) = SPC(298)+C2H6(40)                  1.410e-05 	  4.83 	  4.37 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H/CsS2 , C_rad/H2/Cs\H3 ]
+SPC(105)+C2H5(32) = SPC(96)+C2H6(40)                   4.160e+01 	  3.06 	 -0.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S/H/NonDeC , C_rad/H2/Cs\H3 ]
+SPC(181)+C2H5(32) = SPC(321)+C2H6(40)                  1.658e-03 	  4.34 	  1.20 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CSS , C_rad/H2/Cs\H3 ]
+SPC(181)+C2H5(32) = SPC(177)+C2H6(40)                  8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+C2H5(32)+SPC(321) = C2H6(40)+SPC(330)                  3.489e+12 	  0.00 	  7.51 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , Cdpri_Rrad ]
+SPC(225)+C2H5(32) = SPC(321)+C2H6(40)                  2.890e+01 	  3.06 	 -1.60 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ S/H/Cd , C_rad/H2/Cs\H3 ]
+SPC(225)+C2H5(32) = SPC(337)+C2H6(40)                  8.360e-04 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+SPC(275)+C2H5(32) = SPC(371)+C2H6(40)                  1.672e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H2/CsS , C_rad/H2/Cs\H3 ]
+

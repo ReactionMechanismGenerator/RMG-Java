@@ -1,0 +1,13 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+//First one should be 36.30 kcal/mol, second 44.42 kcal/mol
+//C6H12O + H2S = C6H12SHOH	6.13E+01	2.77	36.30	0.0	0.0	0.0
+C8H16SHOH = C8H16O + H2S	3.43E+14	-0.41	44.42	0.0	0.0	0.0
+C7H15COHS + HJ = C7H15CJOHSH	9.50E+08	1.7	-0.70	0.0	0.0	0.0
+C7H15COHS = C7H15COSH           5.10E+12        0.13    28.48   0.0     0.0     0.0
+C7H15J + COS = C7H15COSJ	6.03E+05	1.83	11.84	0.0	0.0	0.0
+CHOHS + C7H15J = C8H16OHSJ	7.74E+02	2.56	3.56	0.0	0.0	0.0
+

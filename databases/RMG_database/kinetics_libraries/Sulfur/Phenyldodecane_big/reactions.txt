@@ -1,0 +1,9 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+Phenyldodecane+Styrene = C8H9-J1+PDD-J1               	1.60e+12	0.00	38.00	0.0	0.0	0.0
+Phenyldodecane = Toluene+C11H22                        	6.80E+12	0.00	54.40	0.0	0.0	0.0
+

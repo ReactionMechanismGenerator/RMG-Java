@@ -1,0 +1,597 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+
+C7H7J(2)+C11H23J(3) = SPC(1)                           2.050e+13 	  0.00 	 -0.13 		0.0	0.0	0.0	//R_Recombination exact:   [ C_rad/H2/Cd , C_rad/H2/Cs ]
+C7H7J(2) = C7H7J(160)                                  6.620e+12 	  0.21 	  7.09 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R4_S_D , doublebond_intra_HCd_pri , radadd_intra_cs2H ]
+C7H7J(2) = C7H7J(163)                                  1.670e+14 	  0.21 	  16.19 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R4_S_D , doublebond_intra_HCd_pri , radadd_intra_csHCd ]
+SPC(1)+C11H23J(3) = C18H29J(6)+SPC(187)                5.940e-04 	  4.34 	  4.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H2/Cs ]
+C18H29J(6) = SPC(820)                                  4.420e+13 	  0.21 	  7.31 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R4_S_D , doublebond_intra_HCd_pri , radadd_intra_csHNd ]
+C18H29J(6) = SPC(823)                                  1.670e+14 	  0.21 	  16.19 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R4_S_D , doublebond_intra_HCd_pri , radadd_intra_csHCd ]
+SPC(1)+C11H23J(3) = SPC(16)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(16)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(16)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(16) = C18H29J(6)                                   5.020e-01 	  3.86 	  9.95 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/Cd ]
+SPC(16) = SPC(1537)                                    1.970e+12 	  0.21 	  7.28 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R7_SSSS_D , doublebond_intra_HCd_pri , radadd_intra_csHNd ]
+SPC(16) = SPC(1536)                                    2.510e+10 	  0.00 	  6.85 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic estimate: (Average:)  [ R6_SSS_D , doublebond_intra_HDe_secDe , radadd_intra_csHNd ]
+SPC(1)+C11H23J(3) = SPC(37)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(37)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(37)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(1)+SPC(16) = SPC(37)+SPC(1)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(1)+C11H23J(3) = SPC(25)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(25)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(25)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(25) = C18H29J(6)                                   3.872e+06 	  1.67 	  30.07 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R7H , C_rad_out_H/NonDeC , Cs_H_out_H/Cd ]
+SPC(1)+SPC(16) = SPC(25)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(16) = SPC(25)                                      9.660e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(25)+SPC(1) = SPC(1)+SPC(37)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/NonDeC ]
+SPC(25) = SPC(37)                                      2.720e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(1)+C11H23J(3) = SPC(13)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(13)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(13)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(13) = C18H29J(6)                                   6.820e+09 	  0.73 	  30.50 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/Cd ]
+SPC(1)+SPC(16) = SPC(13)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(16) = SPC(13)                                      1.014e+10 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(13)+SPC(1) = SPC(1)+SPC(37)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/NonDeC ]
+SPC(1)+SPC(25) = SPC(13)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(25) = SPC(13)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(13) = SPC(2748)                                    5.760e+11 	  0.21 	  5.82 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R6_SSS_D , doublebond_intra_HCd_pri , radadd_intra_csHNd ]
+SPC(1)+C11H23J(3) = SPC(28)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(28)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(28)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(1)+SPC(16) = SPC(28)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(16) = SPC(28)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(28)+SPC(1) = SPC(1)+SPC(37)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/NonDeC ]
+SPC(28) = SPC(37)                                      6.440e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(1)+SPC(25) = SPC(28)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(25) = SPC(28)                                      1.014e+10 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(13) = SPC(28)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(13) = SPC(28)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R6H_SSSSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+C11H23J(3) = SPC(10)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(10)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(10)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(10) = C18H29J(6)                                   1.682e+10 	  0.35 	  29.90 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/Cd ]
+SPC(1)+SPC(16) = SPC(10)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(16) = SPC(10)                                      1.100e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration exact:   [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(10)+SPC(1) = SPC(1)+SPC(37)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/NonDeC ]
+SPC(1)+SPC(25) = SPC(10)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(25) = SPC(10)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R6H_SSSSS , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(1)+SPC(13) = SPC(10)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(13) = SPC(10)                                      6.760e+09 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration exact:   [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(1)+SPC(28) = SPC(10)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(28) = SPC(10)                                      5.807e+06 	  1.67 	  30.07 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R7H , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(10) = SPC(3517)                                    1.750e+13 	  0.21 	  15.52 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R5_SS_D , doublebond_intra_HCd_pri , radadd_intra_csHNd ]
+SPC(1)+C11H23J(3) = SPC(22)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(22)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(22)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(22) = C18H29J(6)                                   2.720e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R6H_SSSSS , C_rad_out_H/NonDeC , Cs_H_out_H/Cd ]
+SPC(1)+SPC(16) = SPC(22)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(16) = SPC(22)                                      1.650e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(22)+SPC(1) = SPC(1)+SPC(37)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/NonDeC ]
+SPC(22) = SPC(37)                                      2.720e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R6H_SSSSS , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(1)+SPC(25) = SPC(22)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(25) = SPC(22)                                      1.014e+10 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(13) = SPC(22)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(13) = SPC(22)                                      9.660e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(28) = SPC(22)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(28) = SPC(22)                                      1.650e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(10) = SPC(22)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(10) = SPC(22)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+C11H23J(3) = SPC(34)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(34)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(34)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(1)+SPC(16) = SPC(34)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(16) = SPC(34)                                      5.807e+06 	  1.67 	  30.07 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R7H , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(34)+SPC(1) = SPC(1)+SPC(37)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/NonDeC ]
+SPC(34) = SPC(37)                                      6.760e+09 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration exact:   [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(1)+SPC(25) = SPC(34)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(25) = SPC(34)                                      9.660e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(13) = SPC(34)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(1)+SPC(28) = SPC(34)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(28) = SPC(34)                                      1.650e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(10) = SPC(34)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(1)+SPC(22) = SPC(34)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(22) = SPC(34)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+C11H23J(3) = SPC(19)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(19)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(19)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(19) = C18H29J(6)                                   2.720e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_H/NonDeC , Cs_H_out_H/Cd ]
+SPC(1)+SPC(16) = SPC(19)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(16) = SPC(19)                                      1.014e+10 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(19)+SPC(1) = SPC(1)+SPC(37)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/NonDeC ]
+SPC(19) = SPC(37)                                      3.872e+06 	  1.67 	  30.07 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R7H , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(1)+SPC(25) = SPC(19)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(25) = SPC(19)                                      1.650e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(13) = SPC(19)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(13) = SPC(19)                                      1.650e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(28) = SPC(19)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(28) = SPC(19)                                      9.660e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(10) = SPC(19)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(10) = SPC(19)                                      9.660e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(22) = SPC(19)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(22) = SPC(19)                                      1.014e+10 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(34) = SPC(19)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(34) = SPC(19)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R6H_SSSSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+C11H23J(3) = SPC(31)+SPC(187)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(31)+SPC(1) = SPC(1)+C18H29J(6)                     8.530e-04 	  4.34 	  3.10 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/CdCs ]
+DUP
+SPC(31)+SPC(1) = SPC(1)+C18H29J(6)                     2.810e-04 	  4.34 	  4.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H/NonDeC ]
+DUP
+SPC(1)+SPC(16) = SPC(31)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(16) = SPC(31)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R6H_SSSSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(31)+SPC(1) = SPC(1)+SPC(37)                        1.732e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H2/NonDeC ]
+SPC(31) = SPC(37)                                      1.100e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration exact:   [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/NonDeC ]
+SPC(1)+SPC(25) = SPC(31)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(25) = SPC(31)                                      1.650e+09 	  1.01 	  36.40 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R3H_SS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(13) = SPC(31)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(13) = SPC(31)                                      5.807e+06 	  1.67 	  30.07 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R7H , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(28) = SPC(31)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(28) = SPC(31)                                      1.014e+10 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(10) = SPC(31)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(1)+SPC(22) = SPC(31)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(22) = SPC(31)                                      9.660e+09 	  0.13 	  20.70 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(34) = SPC(31)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(34) = SPC(31)                                      1.014e+10 	  0.88 	  38.00 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(1)+SPC(19) = SPC(31)+SPC(1)                        2.598e-03 	  4.34 	  7.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H/NonDeC ]
+SPC(19) = SPC(31)                                      4.080e+10 	 -0.66 	  14.28 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R5H_SSSS , C_rad_out_H/NonDeC , Cs_H_out_H/(NonDeC/Cs) ]
+SPC(2067) = SPC(1536)                                  2.510e+10 	  0.00 	  6.85 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic estimate: (Average:)  [ R6_SSS_D , doublebond_intra_HDe_secDe , radadd_intra_cs2H ]
+SPC(1822) = SPC(1537)                                  5.690e+11 	  0.51 	  43.30 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , C_rad_out_OneDe/Cs , Cs_H_out_Cd ]
+DUP
+SPC(1822) = SPC(1537)                                  3.872e+06 	  1.67 	  30.07 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R2H_S , Y_rad_out , XH_out ]
+DUP
+SPC(2067) = SPC(1822)                                  2.950e+11 	  0.21 	  7.06 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R7_SSSS_D , doublebond_intra_HCd_pri , radadd_intra_cs2H ]
+SPC(1)+C7H7J(2) = C18H29J(6)+C7H8(78)                  2.980e-03 	  4.34 	  12.50 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H2/Cd ]
+SPC(10)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(13)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(16)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(19)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(22)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(25)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(28)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(31)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(34)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+SPC(37)+C7H8(78) = SPC(1)+C7H7J(2)                     1.008e-03 	  4.34 	  4.70 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H3/Cd ]
+C11H23J(3)+C7H8(78) = SPC(187)+C7H7J(2)                8.700e-04 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H3/Cd ]
+C7H7J(2)+C11H23J(3) = C7H8(78)+SPC(203)                2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H2/Nd_Csrad ]
+C11H23J(3)+C11H23J(3) = SPC(187)+SPC(203)              2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C18H29J(6)+C11H23J(3) = SPC(1)+SPC(203)                2.630e+04 	  2.00 	  0.57 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(16)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(37)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(25)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+C7H7J(2)+SPC(203) = SPC(13)                            2.220e+04 	  2.41 	  11.61 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ CsJ-CdHH , Cds-HH_Cds-CsH ]
+SPC(13)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(28)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(10)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(22)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(34)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(19)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(31)+C11H23J(3) = SPC(1)+SPC(203)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+C8H8(637)+C10H21J(9) = C18H29J(6)                      2.390e+03 	  2.41 	  1.95 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-HH_Cds-CdH , CsJ-CsHH ]
+SPC(1)+C10H21J(9) = C18H29J(6)+SPC(533)                5.940e-04 	  4.34 	  4.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(10)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(13)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(16)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(19)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(22)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(25)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(28)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(31)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(34)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C10H21J(9) = SPC(37)+SPC(533)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(187)+C10H21J(9) = C11H23J(3)+SPC(533)              1.012e-02 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/Cs\H2\Cs , C_rad/H2/Cs ]
+C7H8(78)+C10H21J(9) = C7H7J(2)+SPC(533)                8.700e-04 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/Cd , C_rad/H2/Cs ]
+C10H21J(9)+C11H23J(3) = SPC(533)+SPC(203)              2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C18H29J(6) = SPC(824)                                  2.750e+14 	  0.19 	  36.63 		0.0	0.0	0.0	//Intra_R_Add_Endocyclic exact:   [ R4_S_D , doublebond_intra_pri_HCd , radadd_intra_csHCd ]
+SPC(2067) = SPC(4942)                                  1.810e-03 	  4.25 	  9.07 		0.0	0.0	0.0	//intra_H_migration estimate: (Average:)  [ R4H_SSS , C_rad_out_2H , Cs_H_out_Cd ]
+SPC(4942) = SPC(9281)                                  1.410e+13 	  0.21 	  6.29 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R4_S_D , doublebond_intra_HCd_pri , radadd_intra_csNdNd ]
+SPC(4942) = SPC(9284)                                  1.670e+14 	  0.21 	  16.19 		0.0	0.0	0.0	//Intra_R_Add_Exocyclic exact:   [ R4_S_D , doublebond_intra_HCd_pri , radadd_intra_csHCd ]
+SPC(1)+SPC(2067) = C18H29J(6)+SPC(4743)                5.940e-04 	  4.34 	  4.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(10)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(13)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(16)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(19)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(22)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(25)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(28)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(31)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(34)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+SPC(2067) = SPC(37)+SPC(4743)                   1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(187)+SPC(2067) = C11H23J(3)+SPC(4743)              5.520e-03 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/Cs\H2\Cs , C_rad/H2/Cs ]
+SPC(2067)+C11H23J(3) = SPC(4743)+SPC(203)              2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C7H8(78)+SPC(2067) = C7H7J(2)+SPC(4743)                8.700e-04 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/Cd , C_rad/H2/Cs ]
+SPC(533)+SPC(2067) = C10H21J(9)+SPC(4743)              5.520e-03 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/Cs\H2\Cs , C_rad/H2/Cs ]
+C18H29J(6)+SPC(4743) = SPC(1)+SPC(4942)                1.150e-03 	  4.34 	  9.30 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/CdCs , C/H/Cs2Cd ]
+SPC(10)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(13)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(16)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(19)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(22)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(25)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(28)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(31)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(34)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+SPC(37)+SPC(4743) = SPC(1)+SPC(4942)                   4.260e-04 	  4.34 	  1.60 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H/NonDeC , C/H/Cs2Cd ]
+C11H23J(3)+SPC(4743) = SPC(187)+SPC(4942)              5.520e-04 	  4.34 	  2.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H/Cs2Cd ]
+C7H7J(2)+SPC(4743) = C7H8(78)+SPC(4942)                2.780e-03 	  4.34 	  8.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cd , C/H/Cs2Cd ]
+C10H21J(9)+SPC(4743) = SPC(533)+SPC(4942)              5.520e-04 	  4.34 	  2.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ C_rad/H2/Cs , C/H/Cs2Cd ]
+SPC(4942)+C11H23J(3) = SPC(4743)+SPC(203)              4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/Cs2 , C/H2/Nd_Csrad ]
+SPC(4743)+SPC(2067) = SPC(4942)+SPC(4743)              5.520e-04 	  4.34 	  2.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H/Cs2Cd , C_rad/H2/Cs ]
+SPC(8946)+C7H15J(18) = SPC(4942)                       2.720e+03 	  2.41 	  1.53 		0.0	0.0	0.0	//R_Addition_MultipleBond exact:   [ Cds-HH_Cds-CdCs , CsJ-CsHH ]
+SPC(1)+C7H15J(18) = C18H29J(6)+SPC(10367)              5.940e-04 	  4.34 	  4.90 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/CbCs , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(10)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(13)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(16)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(19)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(22)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(25)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(28)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(31)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(34)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(1)+C7H15J(18) = SPC(37)+SPC(10367)                 1.840e-03 	  4.34 	  7.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H2/NonDeC , C_rad/H2/Cs ]
+SPC(187)+C7H15J(18) = C11H23J(3)+SPC(10367)            1.012e-02 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/Cs\H2\Cs , C_rad/H2/Cs ]
+C7H8(78)+C7H15J(18) = C7H7J(2)+SPC(10367)              8.700e-04 	  4.34 	  5.00 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H3/Cd , C_rad/H2/Cs ]
+SPC(533)+C7H15J(18) = C10H21J(9)+SPC(10367)            1.012e-02 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C/H3/Cs\H2\Cs , C_rad/H2/Cs ]
+SPC(2067)+SPC(10367) = SPC(4743)+C7H15J(18)            5.520e-03 	  4.34 	  9.20 		0.0	0.0	0.0	//H_Abstraction estimate: (Average:)  [ C_rad/H2/Cs , C/H3/Cs\H2\Cs ]
+SPC(4743)+C7H15J(18) = SPC(4942)+SPC(10367)            5.520e-04 	  4.34 	  2.20 		0.0	0.0	0.0	//H_Abstraction exact:   [ C/H/Cs2Cd , C_rad/H2/Cs ]
+C7H15J(18)+C11H23J(3) = SPC(10367)+SPC(203)            2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C7H7J(2)+C18H29J(6) = C7H8(78)+SPC(636)                2.900e+12 	  0.00 	 -0.13 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cd , C/H2/Nd_Csrad ]
+C11H23J(3)+C18H29J(6) = SPC(187)+SPC(636)              2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C18H29J(6)+C18H29J(6) = SPC(1)+SPC(636)                2.630e+04 	  2.00 	  0.57 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/OneDeC , C/H2/Nd_Csrad ]
+SPC(16)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(37)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(25)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(13)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(28)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+C7H7J(2)+SPC(10) = C7H8(78)+SPC(636)                   7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cd , C/H2/De_Csrad ]
+C11H23J(3)+SPC(10) = SPC(187)+SPC(636)                 7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/De_Csrad ]
+SPC(10)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(16)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(37)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(25)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(13)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(28)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(10)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(22)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(22)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(34)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(34)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(19)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(19)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(31)+C18H29J(6) = SPC(1)+SPC(636)                   1.026e+14 	 -0.35 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H/NonDeC , C/H2/Nd_Csrad ]
+SPC(31)+SPC(10) = SPC(1)+SPC(636)                      7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H/NonDeC , C/H2/De_Csrad ]
+SPC(2067)+C18H29J(6) = SPC(4743)+SPC(636)              2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+SPC(2067)+SPC(10) = SPC(4743)+SPC(636)                 7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/De_Csrad ]
+C10H21J(9)+C18H29J(6) = SPC(533)+SPC(636)              2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C10H21J(9)+SPC(10) = SPC(533)+SPC(636)                 7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/De_Csrad ]
+SPC(4942)+C18H29J(6) = SPC(4743)+SPC(636)              4.320e+14 	 -0.75 	  0.00 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/Cs2 , C/H2/Nd_Csrad ]
+SPC(4942)+SPC(10) = SPC(4743)+SPC(636)                 7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/Cs2 , C/H2/De_Csrad ]
+C7H15J(18)+C18H29J(6) = SPC(10367)+SPC(636)            2.900e+12 	  0.00 	  0.00 		0.0	0.0	0.0	//Disproportionation exact:   [ C_rad/H2/Cs , C/H2/Nd_Csrad ]
+C7H15J(18)+SPC(10) = SPC(10367)+SPC(636)               7.809e+10 	  0.47 	  1.61 		0.0	0.0	0.0	//Disproportionation estimate: (Average:)  [ C_rad/H2/Cs , C/H2/De_Csrad ]
+C8H8(637)+C7H8(78) = SPC(8346)                         2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8346)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8347)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8347)                         2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8386)                        2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8386)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8387)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8387)                        2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8392)                        2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8392)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8393)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8393)                        2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8342)                         2.520e+09 	  0.00 	  17.78 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.1 from 16.7 to dHrxn(298K) = 17.8 kcal/mol.
+DUP
+C8H8(637)+C7H8(78) = SPC(8342)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8343)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8343)                         2.520e+09 	  0.00 	  17.78 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.1 from 16.7 to dHrxn(298K) = 17.8 kcal/mol.
+DUP
+C7H8(78)+C8H8(637) = SPC(8356)                         2.520e+09 	  0.00 	  17.78 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.1 from 16.7 to dHrxn(298K) = 17.8 kcal/mol.
+DUP
+C7H8(78)+C8H8(637) = SPC(8356)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+C7H8(78)+C8H8(637) = SPC(8357)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C7H8(78)+C8H8(637) = SPC(8357)                         2.520e+09 	  0.00 	  17.78 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.1 from 16.7 to dHrxn(298K) = 17.8 kcal/mol.
+DUP
+C8H8(637)+SPC(4743) = SPC(10324)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+SPC(4743) = SPC(10324)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C8H8(637)+SPC(4743) = SPC(10325)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C8H8(637)+SPC(4743) = SPC(10325)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C7H8(78)+C8H8(637) = SPC(8362)                         2.520e+09 	  0.00 	  18.13 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.4 from 16.7 to dHrxn(298K) = 18.1 kcal/mol.
+DUP
+C7H8(78)+C8H8(637) = SPC(8362)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+C7H8(78)+C8H8(637) = SPC(8363)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C7H8(78)+C8H8(637) = SPC(8363)                         2.520e+09 	  0.00 	  18.13 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.4 from 16.7 to dHrxn(298K) = 18.1 kcal/mol.
+DUP
+SPC(4743)+C8H8(637) = SPC(10300)                       2.520e+09 	  0.00 	  17.28 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.6 from 16.7 to dHrxn(298K) = 17.3 kcal/mol.
+DUP
+SPC(4743)+C8H8(637) = SPC(10300)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(4743)+C8H8(637) = SPC(10301)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(4743)+C8H8(637) = SPC(10301)                       2.520e+09 	  0.00 	  17.28 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.6 from 16.7 to dHrxn(298K) = 17.3 kcal/mol.
+DUP
+C8H8(637)+SPC(4743) = SPC(10320)                       2.520e+09 	  0.00 	  17.28 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.6 from 16.7 to dHrxn(298K) = 17.3 kcal/mol.
+DUP
+C8H8(637)+SPC(4743) = SPC(10320)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C8H8(637)+SPC(4743) = SPC(10321)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C8H8(637)+SPC(4743) = SPC(10321)                       2.520e+09 	  0.00 	  17.28 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.6 from 16.7 to dHrxn(298K) = 17.3 kcal/mol.
+DUP
+SPC(4743)+C8H8(637) = SPC(10306)                       2.520e+09 	  0.00 	  17.63 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.9 from 16.7 to dHrxn(298K) = 17.6 kcal/mol.
+DUP
+SPC(4743)+C8H8(637) = SPC(10306)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(4743)+C8H8(637) = SPC(10307)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(4743)+C8H8(637) = SPC(10307)                       2.520e+09 	  0.00 	  17.63 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.9 from 16.7 to dHrxn(298K) = 17.6 kcal/mol.
+DUP
+SPC(8946)+C7H8(78) = SPC(12304)                        2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(8946)+C7H8(78) = SPC(12304)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+SPC(8946)+C7H8(78) = SPC(12305)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+SPC(8946)+C7H8(78) = SPC(12305)                        2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C7H8(78)+C7H8(78) = SPC(6344)                          2.520e+09 	  0.00 	  19.42 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.7 from 16.7 to dHrxn(298K) = 19.4 kcal/mol.
+DUP
+C7H8(78)+C7H8(78) = SPC(6344)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C7H8(78)+C7H8(78) = SPC(6345)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C7H8(78)+C7H8(78) = SPC(6345)                          2.520e+09 	  0.00 	  19.42 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.7 from 16.7 to dHrxn(298K) = 19.4 kcal/mol.
+DUP
+C8H8(637)+SPC(8946) = SPC(12368)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+SPC(8946) = SPC(12368)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(8946)+C8H8(637) = SPC(12344)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(8946)+C8H8(637) = SPC(12344)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(8946)+C8H8(637) = SPC(12345)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(8946)+C8H8(637) = SPC(12345)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+SPC(8946) = SPC(12369)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C8H8(637)+SPC(8946) = SPC(12369)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+SPC(8946) = SPC(12374)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+SPC(8946) = SPC(12374)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(8946)+C8H8(637) = SPC(12350)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(8946)+C8H8(637) = SPC(12350)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(8946)+C8H8(637) = SPC(12351)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(8946)+C8H8(637) = SPC(12351)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+SPC(8946) = SPC(12375)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C8H8(637)+SPC(8946) = SPC(12375)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C7H8(78)+C7H8(78) = SPC(6348)                          2.520e+09 	  0.00 	  19.77 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 3.1 from 16.7 to dHrxn(298K) = 19.8 kcal/mol.
+DUP
+C7H8(78)+C7H8(78) = SPC(6348)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C7H8(78)+C7H8(78) = SPC(6349)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C7H8(78)+C7H8(78) = SPC(6349)                          2.520e+09 	  0.00 	  19.77 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 3.1 from 16.7 to dHrxn(298K) = 19.8 kcal/mol.
+DUP
+SPC(4743)+C7H8(78) = SPC(10270)                        2.520e+09 	  0.00 	  18.92 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.2 from 16.7 to dHrxn(298K) = 18.9 kcal/mol.
+DUP
+SPC(4743)+C7H8(78) = SPC(10270)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C7H8(78)+SPC(4743) = SPC(10282)                        2.520e+09 	  0.00 	  18.92 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.2 from 16.7 to dHrxn(298K) = 18.9 kcal/mol.
+DUP
+C7H8(78)+SPC(4743) = SPC(10282)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C7H8(78)+SPC(4743) = SPC(10283)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C7H8(78)+SPC(4743) = SPC(10283)                        2.520e+09 	  0.00 	  18.92 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.2 from 16.7 to dHrxn(298K) = 18.9 kcal/mol.
+DUP
+SPC(4743)+C7H8(78) = SPC(10271)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+SPC(4743)+C7H8(78) = SPC(10271)                        2.520e+09 	  0.00 	  18.92 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.2 from 16.7 to dHrxn(298K) = 18.9 kcal/mol.
+DUP
+SPC(4743)+C7H8(78) = SPC(10274)                        2.520e+09 	  0.00 	  19.27 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.6 from 16.7 to dHrxn(298K) = 19.3 kcal/mol.
+DUP
+SPC(4743)+C7H8(78) = SPC(10274)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C7H8(78)+SPC(4743) = SPC(10286)                        2.520e+09 	  0.00 	  19.27 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.6 from 16.7 to dHrxn(298K) = 19.3 kcal/mol.
+DUP
+C7H8(78)+SPC(4743) = SPC(10286)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+SPC(4743)+C7H8(78) = SPC(10275)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+SPC(4743)+C7H8(78) = SPC(10275)                        2.520e+09 	  0.00 	  19.27 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.6 from 16.7 to dHrxn(298K) = 19.3 kcal/mol.
+DUP
+C7H8(78)+SPC(4743) = SPC(10287)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C7H8(78)+SPC(4743) = SPC(10287)                        2.520e+09 	  0.00 	  19.27 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 2.6 from 16.7 to dHrxn(298K) = 19.3 kcal/mol.
+DUP
+SPC(8946)+SPC(4743) = SPC(12486)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(8946)+SPC(4743) = SPC(12486)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+SPC(8946)+SPC(4743) = SPC(12487)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+SPC(8946)+SPC(4743) = SPC(12487)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C7H8(78)+SPC(8946) = SPC(12314)                        2.520e+09 	  0.00 	  18.02 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.3 from 16.7 to dHrxn(298K) = 18.0 kcal/mol.
+DUP
+C7H8(78)+SPC(8946) = SPC(12314)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(8946)+C7H8(78) = SPC(12300)                        2.520e+09 	  0.00 	  18.02 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.3 from 16.7 to dHrxn(298K) = 18.0 kcal/mol.
+DUP
+SPC(8946)+C7H8(78) = SPC(12300)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+SPC(8946)+C7H8(78) = SPC(12301)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+SPC(8946)+C7H8(78) = SPC(12301)                        2.520e+09 	  0.00 	  18.02 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.3 from 16.7 to dHrxn(298K) = 18.0 kcal/mol.
+DUP
+C7H8(78)+SPC(8946) = SPC(12315)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C7H8(78)+SPC(8946) = SPC(12315)                        2.520e+09 	  0.00 	  18.02 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.3 from 16.7 to dHrxn(298K) = 18.0 kcal/mol.
+DUP
+C7H8(78)+SPC(8946) = SPC(12320)                        2.520e+09 	  0.00 	  18.37 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.7 from 16.7 to dHrxn(298K) = 18.4 kcal/mol.
+DUP
+C7H8(78)+SPC(8946) = SPC(12320)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+C7H8(78)+SPC(8946) = SPC(12321)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C7H8(78)+SPC(8946) = SPC(12321)                        2.520e+09 	  0.00 	  18.37 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.7 from 16.7 to dHrxn(298K) = 18.4 kcal/mol.
+DUP
+SPC(8946)+SPC(4743) = SPC(12482)                       2.520e+09 	  0.00 	  17.52 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.8 from 16.7 to dHrxn(298K) = 17.5 kcal/mol.
+DUP
+SPC(8946)+SPC(4743) = SPC(12482)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+SPC(8946)+SPC(4743) = SPC(12483)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+SPC(8946)+SPC(4743) = SPC(12483)                       2.520e+09 	  0.00 	  17.52 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.8 from 16.7 to dHrxn(298K) = 17.5 kcal/mol.
+DUP
+SPC(4743)+SPC(8946) = SPC(12496)                       2.520e+09 	  0.00 	  17.52 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.8 from 16.7 to dHrxn(298K) = 17.5 kcal/mol.
+DUP
+SPC(4743)+SPC(8946) = SPC(12496)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(4743)+SPC(8946) = SPC(12497)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(4743)+SPC(8946) = SPC(12497)                       2.520e+09 	  0.00 	  17.52 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 0.8 from 16.7 to dHrxn(298K) = 17.5 kcal/mol.
+DUP
+C7H8(78)+C7H8(78) = SPC(6341)                          2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+C7H8(78)+C7H8(78) = SPC(6342)                          2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+SPC(4743)+SPC(8946) = SPC(12502)                       2.520e+09 	  0.00 	  17.87 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.2 from 16.7 to dHrxn(298K) = 17.9 kcal/mol.
+DUP
+SPC(4743)+SPC(8946) = SPC(12502)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(4743)+SPC(8946) = SPC(12503)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(4743)+SPC(8946) = SPC(12503)                       2.520e+09 	  0.00 	  17.87 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ] Warning: Ea raised by 1.2 from 16.7 to dHrxn(298K) = 17.9 kcal/mol.
+DUP
+C8H8(637)+C7H8(78) = SPC(8339)                         2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_De2_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+C8H8(637)+C7H8(78) = SPC(8340)                         2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_De2_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+C7H8(78)+C8H8(637) = SPC(8352)                         2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+C7H8(78)+C8H8(637) = SPC(8353)                         2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+C8H8(637)+C8H8(637) = SPC(8382)                        2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_De2_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+C8H8(637)+C8H8(637) = SPC(8383)                        2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_De2_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+SPC(8946)+SPC(8946) = SPC(12520)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(8946)+SPC(8946) = SPC(12520)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(8946)+SPC(8946) = SPC(12521)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(8946)+SPC(8946) = SPC(12521)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(8946)+SPC(8946) = SPC(12526)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(8946)+SPC(8946) = SPC(12526)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(8946)+SPC(8946) = SPC(12527)                       1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(8946)+SPC(8946) = SPC(12527)                       2.520e+09 	  0.00 	  16.69 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(203)+C7H8(78) = SPC(6667)                          2.138e+09 	  0.00 	  23.35 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(203)+C7H8(78) = SPC(6667)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+SPC(203)+C7H8(78) = SPC(6668)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+SPC(203)+C7H8(78) = SPC(6668)                          2.138e+09 	  0.00 	  23.35 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8335)                         2.138e+09 	  0.00 	  23.35 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8335)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_monosubDe_out , diene_in_NdH ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8336)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+DUP
+C8H8(637)+C7H8(78) = SPC(8336)                         2.138e+09 	  0.00 	  23.35 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(203)+C8H8(637) = SPC(8370)                         2.138e+09 	  0.00 	  23.35 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+SPC(203)+C8H8(637) = SPC(8370)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+SPC(203)+C8H8(637) = SPC(8371)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+SPC(203)+C8H8(637) = SPC(8371)                         2.138e+09 	  0.00 	  23.35 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8376)                        2.138e+09 	  0.00 	  23.35 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8376)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_monosubDe_out , diene_in_DeH ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8377)                        1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_monosubDe_out , diene_in_HDe ]
+DUP
+C8H8(637)+C8H8(637) = SPC(8377)                        2.138e+09 	  0.00 	  23.35 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_monosubDe_out , diene_in_2H ]
+DUP
+C7H8(78)+C7H8(78) = SPC(6343)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C7H8(78)+C7H8(78) = SPC(6346)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C7H8(78)+C7H8(78) = SPC(6347)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C7H8(78)+C7H8(78) = SPC(6350)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C7H8(78)+C7H8(78) = SPC(6351)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C7H8(78)+C7H8(78) = SPC(6352)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_NdDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+SPC(203)+C7H8(78) = SPC(6669)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HNd , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+SPC(203)+C7H8(78) = SPC(6670)                          1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HNd_2H , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+SPC(4743)+C7H8(78) = SPC(10267)                        2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+SPC(4743)+C7H8(78) = SPC(10268)                        2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+C7H8(78)+SPC(4743) = SPC(10279)                        2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_monosubDe_out , diene_in_2H ]
+C7H8(78)+SPC(4743) = SPC(10280)                        2.448e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_monosubDe_monosubDe_out , diene_in_HNd ]
+C7H8(78)+C8H8(637) = SPC(8351)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_NdDe_HDe , diene_unsub_monosubDe_out , diene_in_HDe ]
+C8H8(637)+C7H8(78) = SPC(8337)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_2H , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C8H8(637)+C7H8(78) = SPC(8338)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_2H_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C8H8(637)+C7H8(78) = SPC(8344)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C7H8(78)+C8H8(637) = SPC(8355)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_unsub_monosubDe_out , diene_in_HDe ]
+C8H8(637)+C7H8(78) = SPC(8345)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C8H8(637)+C7H8(78) = SPC(8348)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C8H8(637)+C7H8(78) = SPC(8349)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubNdDe_out , diene_in_2H ]
+C7H8(78)+C8H8(637) = SPC(8358)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubDe2_out , diene_in_2H ]
+C7H8(78)+C8H8(637) = SPC(8359)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_unsub_monosubDe_out , diene_in_HDe ]
+C7H8(78)+C8H8(637) = SPC(8360)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubDe2_out , diene_in_2H ]
+C7H8(78)+C8H8(637) = SPC(8361)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_unsub_monosubDe_out , diene_in_HDe ]
+C7H8(78)+C8H8(637) = SPC(8364)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubDe2_out , diene_in_2H ]
+C7H8(78)+C8H8(637) = SPC(8365)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_unsub_monosubDe_out , diene_in_HDe ]
+C7H8(78)+C8H8(637) = SPC(8366)                         1.224e+09 	  0.25 	  23.48 		0.0	0.0	0.0	//Diels_alder_addition estimate: (Average:)  [ ene_HDe_HDe , diene_monosubDe_disubDe2_out , diene_in_2H ]
+

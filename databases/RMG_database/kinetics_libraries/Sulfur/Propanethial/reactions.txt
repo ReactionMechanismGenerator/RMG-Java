@@ -1,0 +1,8 @@
+Unit:
+A: mol/cm3/s
+E: kcal/mol
+
+Reactions:
+C2H5CHOHSH = C3H6O + H2S        6.76E+12        0.01    43.90   0.0     0.0     0.0
+C2H5COHS = C2H5COSH           	1.95E+01        3.33    20.43   0.0     0.0     0.0
+

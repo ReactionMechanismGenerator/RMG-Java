@@ -1,0 +1,7 @@
+Unit: 
+A: mol/cm3/s 
+E: kJ/mol  
+
+Reactions:   
+
+HSJ + HSJ + M = HSSH + M 			8.700E+18 	-0.76	0	0.0	0.0	0.0

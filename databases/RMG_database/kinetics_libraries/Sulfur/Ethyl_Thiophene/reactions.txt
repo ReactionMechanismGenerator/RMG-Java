@@ -1,0 +1,13 @@
+Unit:
+A: mol/cm3/s
+E: kJ/mol
+
+Reactions:
+H + Et2-Thiophene = Et2-DHT-J	2.56E+07	1.76	9.95	0.0	0.0	0.0
+//C2H5 + Thiophene = Et2-DHT-J	3.78E+03	2.56	23.70	0.0	0.0	0.0
+//C2H3 + Thiophene = Vinyl2-DHT-3J	2.28E+04	2.56	11.09	0.0	0.0	0.0
+Vinyl2-DHT-3J = Vinyl2-DHT-2J	8.37E+10	0.64	290.13	0.0	0.0	0.0
+Vinyl2-DHT-3J = C2H3 + Thiophene	8.18E+14	-0.09	155.65	0.0	0.0	0.0
+Et2-DHT-J = C2H5 + Thiophene	9.63E+13	0.04	122.36	0.0	0.0	0.0
+Et2-DHT25 = Et2-Thiophene + H2	4.67E-06	5.31	190.41	0.0	0.0	0.0
+
