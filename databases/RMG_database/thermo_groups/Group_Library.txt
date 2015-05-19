@@ -1018,7 +1018,8 @@
 1011	Cs-(Cds-Cdd-Od)CbOsOs	Cs-(Cds-Cdd-Od)(Cds-Cds)OsOs									
 1012	Cs-(Cds-Cdd-Cd)CbOsOs	Cs-(Cds-Cds)CbOsOs									
 1013	Cs-CbCtOsOs	Cs-(Cds-Cds)CtOsOs									
-1014	Cs-CbCbOsOs	Cs-(Cds-Cds)(Cds-Cds)OsOs									
+1014	Cs-CbCbOsOs	Cs-(Cds-Cds)(Cds-Cds)OsOs	
+1014    Cs-COsOsSs  Cs-CsOsOsSs								
 1015	Cs-COsOsOs	Cs-CsOsOsOs									
 1016	Cs-CsOsOsOs	-19	-33.56	4.33	6.19	7.25	7.7	8.2	8.24	8.24	0.4	0.2	0.2	Cs-OOOCs BOZZELLI est !!!WARNING! Cp1500 value taken as Cp1000
 1017	Cs-CdsOsOsOs	Cs-(Cds-Cds)OsOsOs									
