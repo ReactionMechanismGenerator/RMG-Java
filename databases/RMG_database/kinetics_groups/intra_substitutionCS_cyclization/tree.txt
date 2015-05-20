@@ -162,21 +162,25 @@ L1: YJ
 
 
 	
-L1: C-RRR
-	L2: C-RRC
-		L3: C-(NonDe)C
-			L4: C-HHC
-			L4: C-CsHC
-			L4: C-CsCsC
-		L3: C-(OneDe)C
-		L3: C-(TwoDe)C
-	L2: C-RRS
-		L3: C-(NonDe)S
-			L4: C-HHS
-			L4: C-CsHS
-			L4: C-CsCsS
-		L3: C-(OneDe)S
-		L3: C-(TwoDe)S
+L1: C
+    L2: Cs
+        L3: C-RRR
+	        L3: C-RRC
+		        L4: C-(NonDe)C
+			        L5: C-HHC
+			        L5: C-CsHC
+			        L5: C-CsCsC
+		        L4: C-(OneDe)C
+		        L4: C-(TwoDe)C
+	        L3: C-RRS
+		        L4: C-(NonDe)S
+			        L5: C-HHS
+			        L5: C-CsHS
+			        L5: C-CsCsS
+		        L4: C-(OneDe)S
+		        L4: C-(TwoDe)S
+    L2: Cds
+    L2: Ct
 
 
 L1: S-R

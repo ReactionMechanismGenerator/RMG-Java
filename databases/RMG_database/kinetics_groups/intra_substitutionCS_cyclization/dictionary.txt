@@ -885,6 +885,18 @@ SsJ-3-Cd
 
 // always S bond with Ss implied in group
 
+C
+1 *1 C 0
+
+Cds
+1 *1 Cd 0
+
+Ct
+1 *1 Ct 0
+
+
+Cs
+1 *1 Cs 0
 
 C-RRR
 1 *1 Cs 0 {2,S} {3,S} {4,S}

@@ -129,5 +129,5 @@ L1: C
 			L4: C-CtSsH
 			L4: C-CtSsCs
 			L4: C-CtSsSs	
-	L2: Cds-R
+	L2: Cds
 	L2: Ct	

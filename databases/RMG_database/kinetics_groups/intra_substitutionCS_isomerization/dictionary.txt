@@ -560,7 +560,7 @@ SJ-3
 //
 
 C
-Union {C-RRR, Cds-R, Ct}
+1 *1 C 0
 
 C-RRR
 1 *1 C 0 {2,S} {3,S} {4,S}
@@ -700,10 +700,8 @@ C-CtSsSs
 3 Ss 0 {1,S}
 4 Ss 0 {1,S}
 
-Cds-R
-1 *1 Cd 0 {2,S} {3,D}
-2 R 0 {1,S}
-3 R 0 {1,D}
+Cds
+1 *1 Cd 0 
 
 Ct
 1 *1 Ct 0
