@@ -733,13 +733,6 @@ propen-2-thio
 3 C 0 {1,S}
 4 C 0 {1,D}
 
-//This is the cis- version.
-propen-1-thio
-1 S 1 {2,S}
-2 C 0 {1,S} {3,D}
-3 C 0 {2,D} {4,S}
-4 C 0 {3,S}
-
 CH3SSSj
 1 S 1 {2,S}
 2 S 0 {1,S} {3,S}
@@ -792,12 +785,6 @@ hex-2-yn-4-yl-4-methyl-5-thia
 5 C 0 {3,S} {6,T}
 6 C 0 {5,T} {7,S}
 7 C 0 {6,S}
-
-propan-1-yl-1-thione
-1 S 0 {2,D}
-2 C 1 {1,D} {3,S}
-3 C 0 {2,S} {4,S}
-4 C 0 {3,S}
 
 S2JJ
 1 S 1 {2,S}
@@ -1080,13 +1067,13 @@ CH3C2H2SH
 C2H5CJS
 1 C 0 {2,S}
 2 C 0 {1,S} {3,S}
-3 C 1 {2,S] {4,D}
+3 C 1 {2,S} {4,D}
 4 S 0 {3,D}
 
 C2H4CHS
 1 C 0 {2,S}
 2 C 0 {1,S} {3,D}
-3 C 0 {2,D] {4,S}
+3 C 0 {2,D} {4,S}
 4 S 1 {3,S}
 
 hexyl_sulfide
