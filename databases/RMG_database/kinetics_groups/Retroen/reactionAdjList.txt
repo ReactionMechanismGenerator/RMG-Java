@@ -1,0 +1,10 @@
+alkylaromatic -> methylaromatic + alkene
+
+forward
+reverse(f39): combine_alkylaromatic
+
+Actions 1
+(1) BREAK_BOND		{*1,S,*2}
+(2) BREAK_BOND          {*3,S,*4}
+(3) FORM_BOND           {*1,S,*4}
+(4) CHANGE_BOND 	{*2,1,*3}
