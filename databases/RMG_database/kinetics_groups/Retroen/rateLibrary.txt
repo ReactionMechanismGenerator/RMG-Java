@@ -1,4 +1,4 @@
 Arrhenius_EP
 
 //No.	group     	Temp.		A		N	a	E0	DA	Dn	Da	DE0	Rank	Comments
-1. alkylaromatic 	300-2000 	6.80e+12	0.00	0.00  54.40     0       0        0      0       3       Burkle-Virtzthum DOI: 10.1021/ie030086f
+1. alkylaromatic 	300-2000 	8.50e+11	0.00	0.00  54.40     0       0        0      0       3       Burkle-Virtzthum DOI: 10.1021/ie030086f
