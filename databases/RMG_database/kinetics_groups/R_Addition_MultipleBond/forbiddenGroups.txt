@@ -6,5 +6,10 @@ O2d
 1 *1 O 0 {2,D}
 2 *2 O 0 {1,D}
 
-
-
+benzene_doublebond
+1 *1 Cd 0 {2,D} {6,S}
+2 *2 Cd 0 {1,D} {3,S}
+3    Cd X {2,S} {4,D}
+4    Cd X {3,D} {5,S}
+5    Cd X {4,S} {6,D}
+6    Cd X {5,D} {1,S}
