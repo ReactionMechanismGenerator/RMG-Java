@@ -1,11 +1,19 @@
-====================================
-RMG - Reaction Mechanism Generator
-====================================
+=======================================
+RMG-Java - Reaction Mechanism Generator
+=======================================
+
+Notice
+------
+This is the Java version of RMG.  It is no longer actively developed.  We recommend instead
+using the latest version of RMG written in Python, which can be found here: http://reactionmechanismgenerator.github.io
+
+Description
+-----------
 
 .. image:: https://github.com/GreenGroup/RMG-Java/raw/master/web/source/_static/rmg_logo.png
    :align: right
       
-RMG is an automatic chemical reaction mechanism generator that constructs
+RMG (Java version) is an automatic chemical reaction mechanism generator that constructs
 kinetic models composed of elementary chemical reaction steps using a general
 understanding of how molecules react.
 
