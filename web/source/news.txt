@@ -3,6 +3,13 @@
 RMG News and Updates
 **********************************
 
+2016-01-29: RMG (Python version) 1.0.2 Released! RMG-Java found here on Sourceforge is no longer active
+=======================================================================================================
+
+The latest version of RMG is now written in Python, containing many new features as well as database improvements.
+This website is no longer active as it contains information for the older, Java version of RMG, which is no longer
+in active development.  Please find the latest Python version of RMG here: http://reactionmechanismgenerator.github.io
+
 
 2013-05-06: RMG 4.0.1 Released
 ==============================
